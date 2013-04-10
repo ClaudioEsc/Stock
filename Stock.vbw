@@ -1,0 +1,16 @@
+frmPrincipal = 0, 0, 0, 0, C, 44, 44, 736, 468, C
+modGlobal = 0, 0, 0, 0, C
+frmLogin = 0, 0, 0, 0, C, 110, 110, 802, 534, C
+modADO = 0, 0, 0, 0, C
+modINI = 0, 0, 0, 0, C
+modFlexgrid = 0, 0, 0, 0, C
+modUsuario = 0, 0, 0, 0, C
+frmProducto = 0, 0, 0, 0, C, 66, 66, 758, 490, C
+frmAbout = 0, 0, 0, 0, C, 154, 154, 846, 578, C
+frmSeleccion = 0, 0, 0, 0, C, 22, 22, 714, 468, C
+frmLista = 0, 0, 0, 0, C, 22, 22, 714, 468, C
+CCommonDialog = 0, 0, 0, 0, C
+CString = 0, 0, 0, 0, C
+frmRubro = 0, 0, 0, 0, C, 44, 44, 736, 468, C
+CLista = 0, 0, 0, 0, C
+CListaCampo = 0, 0, 0, 0, C
