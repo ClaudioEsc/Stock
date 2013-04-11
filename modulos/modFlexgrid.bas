@@ -42,7 +42,6 @@ On Error GoTo Catch
     End With
     
 Finally:
-'    grd.Row = PrevRow
     grd.Redraw = True
     
     Exit Sub
@@ -95,4 +94,55 @@ ResumePoint:
 ErrHandler:
     MsgBox Err.Description, vbCritical, Err.Number
     Resume ResumePoint
- End Function
+End Function
+
+Public Sub AutoSize(ByRef grd As MSFlexGrid, _
+                    Optional ByVal Col1 As Long = 0, _
+                    Optional ByVal Col2 As Long = 0)
+    Dim Col As Long
+    Dim Row As Long
+    Dim TopRow As Long
+    Dim ColWidth() As Single
+    Dim CellWidth  As Single
+    
+    With grd
+        If .Rows > 0 Then
+            ReDim ColWidth(0 To .Cols - 1)
+            
+            For Col = 0 To .Cols - 1
+                ColWidth(Col) = .Parent.TextWidth(.TextMatrix(0, Col))
+            Next
+            
+            'Solamente se ajustan 200 filas.
+            If .Rows > 200 Then
+                TopRow = 200
+            Else
+                TopRow = .Rows - 1
+            End If
+            
+            If Col1 = 0 And Col2 = 0 Then
+                Col1 = 0
+                Col2 = .Cols - 1
+            ElseIf Col1 <> 0 And Col2 = 0 Then
+                Col2 = Col1
+            End If
+    
+            If Col2 = 0 Then Col2 = .Cols - 1
+                        
+            For Row = 1 To TopRow
+                For Col = Col1 To Col2
+                    CellWidth = .Parent.TextWidth(.TextMatrix(Row, Col))
+                    If ColWidth(Col) < CellWidth Then
+                        ColWidth(Col) = CellWidth
+                    End If
+                Next
+            Next
+            
+            For Col = Col1 To Col2
+                .ColWidth(Col) = ColWidth(Col) + 300
+            Next
+        End If
+    End With
+End Sub
+
+

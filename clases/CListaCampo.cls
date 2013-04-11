@@ -13,6 +13,22 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Public Nombre   As String
-Public Titulo   As String
+Public Enum ECampoAlineacion
+    caIzquierda
+    caDerecha
+    caCentro
+End Enum
 
+Public Enum ECampoTipo
+    ctNumero
+    ctTexto
+    ctFecha
+    ctHora
+    ctFechaHora
+    ctBool
+End Enum
+
+Public Nombre       As String
+Public Titulo       As String
+Public Alineacion   As ECampoAlineacion
+Public Tipo         As ECampoTipo

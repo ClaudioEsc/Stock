@@ -33,7 +33,6 @@ Public Function ReadINI(ByVal SectionName As String, _
         ReadINI = Left$(sBuffer, lReturn)
     Else
         ReadINI = DefaultValue
-        WriteINI SectionName, KeyName, DefaultValue, INIPath
     End If
 End Function
 

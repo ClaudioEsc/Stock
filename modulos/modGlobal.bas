@@ -22,6 +22,10 @@ Public Sub Main()
                 frmPrincipal.Show
             End If
         End With
+    Else
+        With New frmConexion
+            .Show vbModal
+        End With
     End If
 End Sub
 

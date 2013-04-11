@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
-Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "msflxgrd.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "MSFLXGRD.OCX"
 Begin VB.Form frmLista 
    ClientHeight    =   7320
    ClientLeft      =   60
@@ -71,6 +71,7 @@ Begin VB.Form frmLista
       HighLight       =   2
       GridLinesFixed  =   1
       SelectionMode   =   1
+      AllowUserResizing=   1
       Appearance      =   0
    End
    Begin ComctlLib.StatusBar sbr 
@@ -89,6 +90,7 @@ Begin VB.Form frmLista
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   17463
+            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
@@ -287,23 +289,24 @@ End Sub
 Public Sub IniciarLista()
     Set m_ObjLista = New CLista
     
-    With m_ObjLista
-        Select Case m_Lista
-            Case lsProductos
+    Select Case m_Lista
+        Case lsProductos
+            With m_ObjLista
                 .Titulo = "Productos"
                 .Tabla = "productos"
-                .AgregarCampo "id", "Código"
+                .AgregarCampo "id", "Código", caDerecha, ctNumero
                 .AgregarCampo "descripcion", "Descripción"
-                .AgregarCampo "stock", "Stock"
+                .AgregarCampo "stock", "Stock", caDerecha, ctNumero
+            End With
             
-            Case lsRubros
+        Case lsRubros
+            With m_ObjLista
                 .Titulo = "Rubros"
                 .Tabla = "rubros"
-                .AgregarCampo "id", "Código"
+                .AgregarCampo "id", "Código", caDerecha, ctNumero
                 .AgregarCampo "descripcion", "Descripción"
-                
-        End Select
-    End With
+            End With
+    End Select
 End Sub
 
 Public Sub IniciarControles()
@@ -333,8 +336,8 @@ Public Sub RestaurarEstado()
     'Tiene menos de un campo (primera vez o datos mal cargados)
     If UBound(Estado) < 1 Then
         cboCampo.ListIndex = 0
-        cboOrden.ListIndex = 0 'Ejecuta el procedimiento 'Mostrar' (por eso no se llama en ningun momento)
-'        grd.AutoSize
+        cboOrden.ListIndex = 0 'Ejecuta el procedimiento 'Mostrar'
+        AutoSize grd
     Else
         If Val(Estado(0)) < cboCampo.ListCount Then
             cboCampo.ListIndex = Val(Estado(0))
@@ -353,7 +356,7 @@ Public Sub RestaurarEstado()
                 grd.ColWidth(i - 2) = Val(Estado(i))
             Next
         Else
-'            grd.AutoSize
+            AutoSize grd
         End If
     End If
 End Sub
@@ -491,7 +494,7 @@ Private Sub cmdMenu_Click(Index As Integer)
             Unload Me
             
         Case BTN_AUTOSIZE
-'            grd.AutoSize
+            AutoSize grd
     End Select
 End Sub
 

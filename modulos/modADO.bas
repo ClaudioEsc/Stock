@@ -15,18 +15,17 @@ Private m_Cn        As ADODB.Connection
 Private m_InTrans   As Boolean
 
 Public Function InitConnection() As Boolean
-    Dim PathDB As String
-    Dim CnString As String
-    
-    PathDB = ReadINI("DB", "Path")
-    CnString = "Driver=SQLite3 ODBC Driver;Database=" & App.Path & "\jambo.s3db"
+    Dim cnString As String
+    Dim PathDB  As String
+
+    cnString = "Driver=SQLite3 ODBC Driver;Database=" & ReadINI("db", "path", App.Path & "\db.s3db")
     
 On Error GoTo Catch
     Set m_Cn = New ADODB.Connection
     
     With m_Cn
         .CursorLocation = adUseClient
-        .Open CnString
+        .Open cnString
     End With
 
     InitConnection = True
