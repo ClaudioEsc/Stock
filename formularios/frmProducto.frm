@@ -195,14 +195,14 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private m_Id            As Long
-Private m_ModalResult   As VbMsgBoxResult
+Private m_ModalResult   As EModalResult
 Private m_IsNew         As Boolean
 
 Public Property Get Id() As Long
     Id = m_Id
 End Property
 
-Public Function ShowModal(Optional ByRef OwnerForm As Form) As VbMsgBoxResult
+Public Function ShowModal(Optional ByRef OwnerForm As Form) As EModalResult
     Me.Show vbModal, OwnerForm
     ShowModal = m_ModalResult
 End Function
@@ -322,13 +322,13 @@ End Function
 
 Private Sub cmdAceptar_Click()
     If Guardar Then
-        m_ModalResult = vbOK
+        m_ModalResult = mrOK
         Unload Me
     End If
 End Sub
 
 Private Sub cmdCancelar_Click()
-    m_ModalResult = vbCancel
+    m_ModalResult = mrCancel
     Unload Me
 End Sub
 

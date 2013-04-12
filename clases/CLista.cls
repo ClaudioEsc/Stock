@@ -19,8 +19,9 @@ Public Campos   As Collection
 
 Public Sub AgregarCampo(ByVal Nombre As String, _
                         ByVal Titulo As String, _
-                        Optional ByVal Alineacion As ECampoAlineacion = ECampoAlineacion.caIzquierda, _
-                        Optional ByVal Tipo As ECampoTipo = ECampoTipo.ctTexto)
+                        Optional ByVal Alineacion As ECampoAlineacion = caIzquierda, _
+                        Optional ByVal Tipo As ECampoTipo = ctTexto, _
+                        Optional ByVal PermiteBuscar As Boolean = True)
     Dim c As CListaCampo
     
     Set c = New CListaCampo
@@ -30,6 +31,7 @@ Public Sub AgregarCampo(ByVal Nombre As String, _
         .Titulo = Titulo
         .Alineacion = Alineacion
         .Tipo = Tipo
+        .PermiteBuscar = PermiteBuscar
     End With
     
     Campos.Add c

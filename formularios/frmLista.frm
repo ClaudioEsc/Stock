@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "MSFLXGRD.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "msflxgrd.ocx"
 Begin VB.Form frmLista 
    ClientHeight    =   7320
    ClientLeft      =   60
@@ -63,6 +63,7 @@ Begin VB.Form frmLista
       _ExtentX        =   5212
       _ExtentY        =   2884
       _Version        =   393216
+      FixedCols       =   0
       RowHeightMin    =   300
       BackColorBkg    =   -2147483636
       GridColor       =   -2147483633
@@ -91,7 +92,6 @@ Begin VB.Form frmLista
             AutoSize        =   1
             Object.Width           =   17463
             TextSave        =   ""
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -296,7 +296,8 @@ Public Sub IniciarLista()
                 .Tabla = "productos"
                 .AgregarCampo "id", "Código", caDerecha, ctNumero
                 .AgregarCampo "descripcion", "Descripción"
-                .AgregarCampo "stock", "Stock", caDerecha, ctNumero
+                .AgregarCampo "stock", "Stock", caDerecha, ctNumero, False
+                .AgregarCampo "stock_minimo", "Stock mín.", caDerecha, ctNumero, False
             End With
             
         Case lsRubros
@@ -310,20 +311,50 @@ Public Sub IniciarLista()
 End Sub
 
 Public Sub IniciarControles()
+    Dim Campo As CListaCampo
     Dim i As Long
-    Dim TituloCampo As String
-
-    grd.Cols = grd.FixedCols + m_ObjLista.Campos.Count
     
-    For i = 1 To m_ObjLista.Campos.Count
-        TituloCampo = m_ObjLista.Campos(i).Titulo
+    i = 0
+    
+    With grd
+        .Redraw = False
+        .Clear
+        .Cols = m_ObjLista.Campos.Count
+        .Rows = 1
+    End With
+    
+    For Each Campo In m_ObjLista.Campos
+        If Campo.PermiteBuscar Then
+            With cboCampo
+                .AddItem Campo.Titulo
+                .ItemData(.NewIndex) = i + 1
+            End With
+        End If
         
-        cboCampo.AddItem TituloCampo
+        With cboOrden
+            .AddItem Campo.Titulo & " [ASC]"
+            .ItemData(.NewIndex) = i + 1
+            
+            .AddItem Campo.Titulo & " [DESC]"
+            .ItemData(.NewIndex) = i + 1
+        End With
         
-        cboOrden.AddItem TituloCampo & " [ASC]"
-        cboOrden.AddItem TituloCampo & " [DESC]"
+        With grd
+            .TextMatrix(0, i) = Campo.Titulo
         
-        grd.TextMatrix(0, grd.FixedCols + i - 1) = TituloCampo
+            Select Case Campo.Alineacion
+                Case caDerecha
+                    .ColAlignment(i) = flexAlignRightCenter
+                    
+                Case caCentro
+                    .ColAlignment(i) = flexAlignCenterCenter
+                    
+                Case Else
+                    .ColAlignment(i) = flexAlignLeftCenter
+            End Select
+        End With
+        
+        i = i + 1
     Next
 End Sub
 
@@ -362,54 +393,128 @@ Public Sub RestaurarEstado()
 End Sub
 
 Private Sub Mostrar()
-    Dim rs  As ADODB.Recordset
-    Dim sql As String
+    Dim PrevRow     As Long
+    Dim StartTime   As Double
+    Dim Row         As Long
+    Dim Col         As Long
+    Dim Campo       As CListaCampo
+    Dim rs          As ADODB.Recordset
+    Dim Tabla       As String
     
-    sql = GetConsulta()
+On Error GoTo Catch
+    Screen.MousePointer = vbHourglass
+    StartTime = Timer()
     
-    If Len(sql) <> 0 Then
-        Set rs = GetRs(sql)
+    Tabla = m_ObjLista.Tabla
+    Set rs = GetRs(GetConsulta())
+
+    With grd
+        .Redraw = False
+        PrevRow = .Row
+        .Rows = 1
         
-        FillGrid grd, rs, True
+        If Not EmptyRS(rs) Then
+            .Rows = rs.RecordCount + 1
+
+            For Row = 1 To .Rows - 1
+            
+                Col = 0
+        
+                For Each Campo In m_ObjLista.Campos
+                    If Len(Campo.Formato) Then
+                        .TextMatrix(Row, Col) = Format$(rs.Collect(Campo.Nombre) & vbNullString, Campo.Formato)
+                    Else
+                        .TextMatrix(Row, Col) = rs.Collect(Campo.Nombre) & vbNullString
+                    End If
                     
-        If EmptyRS(rs) Then
-            cmdMenu(BTN_EDIT).Enabled = False
-            cmdMenu(BTN_DELETE).Enabled = False
-            picNoData.Visible = True
-            sbr.Panels(1).Text = "No hay registros."
-        Else
-            cmdMenu(BTN_EDIT).Enabled = True
-            cmdMenu(BTN_DELETE).Enabled = True
-            picNoData.Visible = False
-            sbr.Panels(1).Text = str$(rs.RecordCount) & " registros."
-        End If
+                    Col = Col + 1
+                Next
                 
-        CloseRS rs
+                Select Case Tabla
+                    Case "productos"
+                        If rs.Collect("stock") < rs.Collect("stock_minimo") Then
+                            RowProperty grd, gcpBackColor, &HC0C0FF, Row
+                        End If
+                End Select
+                
+                rs.MoveNext
+            Next
+        End If
+        
+        .Redraw = True
+    End With
+
+    If EmptyRS(rs) Then
+        With txtFiltro
+            If Len(.Text) Then
+                .BackColor = &HC0C0FF
+                .ForeColor = vbWhite
+            End If
+        End With
+        
+        cmdMenu(BTN_EDIT).Enabled = False
+        cmdMenu(BTN_DELETE).Enabled = False
+        sbr.Panels(1).Text = "No se encontraron registros"
+    Else
+        With txtFiltro
+            .BackColor = vbWindowBackground
+            .ForeColor = vbButtonText
+        End With
+        
+        cmdMenu(BTN_EDIT).Enabled = True
+        cmdMenu(BTN_DELETE).Enabled = True
+        sbr.Panels(1).Text = Format$(rs.RecordCount) & " registros (" & Format$(Timer() - StartTime, "#0.00") & " segundos)"
     End If
+
+Finally:
+    CloseRS rs
+    SelectRow grd, PrevRow
+    Screen.MousePointer = vbDefault
+
+    Exit Sub
+Catch:
+    ErrorReport "frmLista", "Mostrar"
+    Resume Finally
 End Sub
 
 Private Function GetConsulta() As String
-'    Dim Filtro  As String
-'    Dim Orden   As String
-'    Dim sql     As String
-'
-'    sql = m_ObjLista.GetSQL
-'
-'    Filtro = Trim$(txtFiltro.Text)
-'
-'    If cboCampo.ListIndex <> -1 And Len(Filtro) <> 0 Then
-'        sql = sql & " WHERE " & m_ObjLista.Campos(cboCampo.ListIndex).Nombre & " LIKE " & SQLText("%" & Filter & "%")
-'    End If
-'
-'    If cboOrden.ListIndex <> -1 Then
-'        If IsEven(cboOrden.ListIndex) Then
-'            sql = sql & " ORDER BY " & StrFormat("{1} ASC", m_ObjLista.Campos(1 + cboOrden.ListIndex / 2).Nombre)
-'        Else
-'            sql = sql & " ORDER BY " & StrFormat("{1} DESC", m_ObjLista.Campos(1 + (cboOrden.ListIndex - 1) / 2).Nombre)
-'        End If
-'    End If
+    Dim Filtro  As String
+    Dim Orden   As String
+    Dim Campo   As CListaCampo
+    Dim sql     As String
     
-    GetConsulta = m_ObjLista.GetSQL
+    If cboCampo.ListIndex <> -1 Then
+        Filtro = Trim$(txtFiltro.Text)
+        
+        If Len(Filtro) <> 0 Then
+            Set Campo = m_ObjLista.Campos(GetItemData(cboCampo))
+            Filtro = Campo.Nombre & " LIKE " & SQLText("%" & Filtro & "%")
+        End If
+    End If
+
+    If cboOrden.ListIndex <> -1 Then
+        Set Campo = m_ObjLista.Campos(GetItemData(cboOrden))
+        
+        If IsEven(cboOrden.ListIndex) Then
+            Orden = Campo.Nombre & " ASC"
+        Else
+            Orden = Campo.Nombre & " DESC"
+        End If
+    End If
+    
+    With New CString
+        .Append m_ObjLista.GetSQL
+        
+        If Len(Filtro) Then
+            .Append " WHERE " & Filtro
+        End If
+        
+        If Len(Orden) Then
+            .Append " ORDER BY " & Orden
+        End If
+    
+        GetConsulta = .ToString
+    End With
 End Function
 
 Private Sub IniciarABM(ByVal Accion As EAccionABM)
@@ -434,14 +539,14 @@ On Error GoTo ErrorHandler
             Case abmNuevo
                 f.Iniciar True
                 
-                If f.ShowModal() = mrOk Then
+                If f.ShowModal() = mrOK Then
                     Mostrar
                 End If
                 
             Case abmModificar
                 f.Iniciar False, Id
                 
-                If f.ShowModal() = mrOk Then
+                If f.ShowModal() = mrOK Then
                     Mostrar
                 End If
                 
@@ -541,7 +646,9 @@ Private Sub Form_Unload(Cancel As Integer)
 End Sub
 
 Private Sub grd_DblClick()
-    If grd.MouseRow <> 0 Then
+    If grd.MouseRow = 0 Then
+        AutoSize grd, grd.MouseCol
+    Else
         cmdMenu_Click BTN_EDIT
     End If
 End Sub

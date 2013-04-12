@@ -32,3 +32,5 @@ Public Nombre       As String
 Public Titulo       As String
 Public Alineacion   As ECampoAlineacion
 Public Tipo         As ECampoTipo
+Public PermiteBuscar As Boolean
+Public Formato      As String

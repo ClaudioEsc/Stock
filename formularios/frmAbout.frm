@@ -63,6 +63,7 @@ Begin VB.Form frmAbout
          Width           =   525
       End
       Begin VB.Label lblVersion 
+         AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
          Caption         =   "0.00.00"
          ForeColor       =   &H00808080&
@@ -70,7 +71,7 @@ Begin VB.Form frmAbout
          Left            =   720
          TabIndex        =   2
          Top             =   360
-         Width           =   615
+         Width           =   570
       End
       Begin VB.Label Label1 
          AutoSize        =   -1  'True

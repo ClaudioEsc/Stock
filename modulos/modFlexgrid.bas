@@ -1,6 +1,15 @@
 Attribute VB_Name = "modFlexgrid"
 Option Explicit
 
+Public Enum EGridCellProperty
+    gcpAlignment
+    gcpFontName
+    gcpFontSize
+    gcpFontBold
+    gcpForeColor
+    gcpBackColor
+End Enum
+
 Public Sub FillGrid(ByRef grd As MSFlexGrid, _
                     ByRef rs As ADODB.Recordset, _
                     Optional ByVal PreserveRow As Boolean = False, _
@@ -145,4 +154,124 @@ Public Sub AutoSize(ByRef grd As MSFlexGrid, _
     End With
 End Sub
 
+Public Sub SelectRow(ByRef grd As MSFlexGrid, Optional ByVal Row As Long = 1)
+On Error Resume Next
+    With grd
+        .Redraw = False
+        
+        If .Rows > .FixedRows Then
+            If Row < .FixedRows Then
+                Row = 1
+            ElseIf Row > .Rows Then
+                Row = .Rows - 1
+            End If
+            
+            If Not .RowIsVisible(Row) Then
+                .TopRow = Row
+            End If
+            
+            .Row = Row
+            .Col = .FixedCols
+            .RowSel = Row
+            .ColSel = .Cols - 1
+        Else
+            .Row = 0
+            .Col = 0
+        End If
+        
+        .Redraw = True
+    End With
+End Sub
+
+Public Sub CellProperty(ByRef grd As MSFlexGrid, _
+                        ByVal Property As EGridCellProperty, _
+                        ByVal NewValue As Variant, _
+                        ByVal FromRow As Long, _
+                        ByVal FromCol As Long, _
+                        Optional ByVal ToRow As Long = -1, _
+                        Optional ByVal ToCol As Long = -1)
+
+    Dim PrevRow As Long
+    Dim PrevCol As Long
+    Dim PrevFillStyle As Long
+    Dim PrevRedraw As Boolean
+        
+    With grd
+        If .Rows = 0 Then Exit Sub
+        If .Cols = 0 Then Exit Sub
+        If FromRow > .Rows - 1 Then Exit Sub
+        If FromCol > .Cols - 1 Then Exit Sub
+        
+        PrevRow = .Row
+        PrevCol = .Col
+        PrevFillStyle = .FillStyle
+        PrevRedraw = .Redraw
+        
+        .Redraw = False
+        .FillStyle = flexFillRepeat
+        
+        If FromRow = -1 Then
+            FromRow = 0
+        Else
+            If FromRow >= 0 And FromRow < .Rows - 1 Then
+                .Row = FromRow
+            End If
+        End If
+        
+        .Row = FromRow
+        .Col = FromCol
+        
+        If ToRow = -1 Then
+            .RowSel = FromRow
+        Else
+            .RowSel = ToRow
+        End If
+        
+        
+        If ToCol = -1 Then
+            .ColSel = FromCol
+        Else
+            .ColSel = ToCol
+        End If
+        
+        Select Case Property
+            Case gcpAlignment
+                .CellAlignment = NewValue
+                
+            Case gcpFontBold
+                .CellFontBold = NewValue
+                
+            Case gcpFontName
+                .CellFontName = NewValue
+                
+            Case gcpFontSize
+                .CellFontSize = NewValue
+                
+            Case gcpForeColor
+                .CellForeColor = NewValue
+                
+            Case gcpBackColor
+                .CellBackColor = NewValue
+        End Select
+        
+        .Row = PrevRow
+        .Col = PrevCol
+        .FillStyle = PrevFillStyle
+        .Redraw = PrevRedraw
+    End With
+End Sub
+
+Public Sub RowProperty(ByRef grd As MSFlexGrid, _
+                       ByVal Property As EGridCellProperty, _
+                       ByVal NewValue As Variant, _
+                       ByVal Row As Long)
+    CellProperty grd, Property, NewValue, Row, grd.FixedCols, Row, grd.Cols - 1
+End Sub
+
+Public Sub ColProperty(ByRef grd As MSFlexGrid, _
+                       ByVal Property As EGridCellProperty, _
+                       ByVal NewValue As Variant, _
+                       ByVal Col As Long)
+    CellProperty grd, Property, NewValue, grd.FixedRows, Col, grd.Rows - 1, Col
+End Sub
 

@@ -43,9 +43,9 @@ Public Sub TerminateConnection()
     Set m_Cn = Nothing
 End Sub
 
-Public Function GetCn() As ADODB.Connection
-    Set GetCn = m_Cn
-End Function
+'Public Function GetCn() As ADODB.Connection
+'    Set GetCn = m_Cn
+'End Function
 
 Private Sub Connect()
     If m_Cn.State = adStateClosed Then

@@ -64,7 +64,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private m_Id As Long
-Private m_ModalResult As VbMsgBoxResult
+Private m_ModalResult As EModalResult
 Private m_IsNew As Boolean
 
 Public Property Get Id() As Long
@@ -166,13 +166,13 @@ End Function
 
 Private Sub cmdAceptar_Click()
     If Guardar Then
-        m_ModalResult = vbOK
+        m_ModalResult = mrOK
         Unload Me
     End If
 End Sub
 
 Private Sub cmdCancelar_Click()
-    m_ModalResult = vbCancel
+    m_ModalResult = mrCancel
     Unload Me
 End Sub
 

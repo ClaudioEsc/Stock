@@ -26,7 +26,7 @@ Begin VB.Form frmSeleccion
       Top             =   120
       Width           =   5535
    End
-   Begin VB.CommandButton cmdOk 
+   Begin VB.CommandButton cmdAceptar 
       Caption         =   "&Aceptar"
       Height          =   375
       Left            =   5700
@@ -60,6 +60,8 @@ Begin VB.Form frmSeleccion
       _ExtentX        =   13891
       _ExtentY        =   5318
       _Version        =   393216
+      FixedCols       =   0
+      RowHeightMin    =   300
       BackColorBkg    =   -2147483636
       GridColor       =   -2147483633
       GridColorFixed  =   -2147483632
@@ -67,6 +69,7 @@ Begin VB.Form frmSeleccion
       HighLight       =   2
       GridLinesFixed  =   1
       SelectionMode   =   1
+      AllowUserResizing=   1
       Appearance      =   0
    End
    Begin VB.Label Label1 
@@ -86,122 +89,179 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Public Enum ETipoSeleccion
-    tsClientes
-    tsProductos
-End Enum
+Private m_Seleccion     As String
+Private m_Rs            As ADODB.Recordset
+Private m_ModalResult   As EModalResult
+Private m_CampoNombre   As String
+Private m_CampoTipo     As EFieldType
+Private m_Anchor        As CAnchor
 
-Private m_TipoSeleccion As ETipoSeleccion
-Private m_OK As Boolean
-Private m_Rs As ADODB.Recordset
-
-Public Property Get ItemSeleccionado(Optional ByVal CampoRetorno = 0) As String
-    ItemSeleccionado = m_Rs.Collect(0)
+Public Property Get ModalResult() As EModalResult
+    ModalResult = m_ModalResult
 End Property
 
-Private Sub cmdOK_Click()
-    If cmdOk.Enabled Then
-        m_Rs.Move grd.Row - 1, 1
-        m_OK = True
-        Unload Me
-    End If
-End Sub
+Public Property Get ItemSeleccionado() As String
+    ItemSeleccionado = m_Seleccion
+End Property
 
-Private Sub cmdCancelar_Click()
+Public Sub Iniciar(ByVal sql As String, _
+                   ByVal CamposTitulos As String, _
+                   Optional ByVal Titulo As String = "Seleccionar", _
+                   Optional ByVal CampoBusqueda As Long = 1)
+
+    Dim i As Long
+    Dim Titulos() As String
+    
+On Error GoTo Catch
+    Set m_Rs = GetRs(sql)
+        
+    If EmptyRS(m_Rs) Then
+        MsgBox "No hay datos para mostrar.", vbExclamation
+    Else
+        With grd
+            .Clear
+            .Rows = 1
+            .Cols = m_Rs.Fields.Count
+        End With
+        
+        cboCampo.Clear
+        Titulos = Split(CamposTitulos, ",")
+        
+        For i = 0 To m_Rs.Fields.Count - 1
+            grd.TextMatrix(0, i) = Trim$(Titulos(i))
+            cboCampo.AddItem Trim$(Titulos(i))
+
+            Select Case GetFieldType(m_Rs.Fields(i))
+                Case fdtLong, fdtDecimal, fdtCurrency, fdtDate
+                    grd.ColAlignment(i) = flexAlignRightCenter
+                    
+                Case fdtBoolean
+                    grd.ColAlignment(i) = flexAlignCenterCenter
+                    
+                Case Else
+                    grd.ColAlignment(i) = flexAlignLeftCenter
+            End Select
+        Next
+        
+        cboCampo.ListIndex = CampoBusqueda
+        Me.Caption = Titulo
+        Me.Show vbModal
+    End If
+    
+    Exit Sub
+Catch:
+    ErrorReport "Iniciar", "frmSeleccion"
     Unload Me
 End Sub
 
 Private Sub Mostrar()
+    Dim Filtro      As String
+    Dim Campo       As String
+    Dim CampoTipo   As EFieldType
+    Dim i           As Long
+    Dim j           As Long
+    
+    Screen.MousePointer = vbHourglass
+    Filtro = Trim$(txtFiltro.Text)
 
-On Error GoTo ErrHandler
-
-    If Len(txtFiltro.Text) = 0 Then
+On Error GoTo Catch
+    If Len(Filtro) = 0 Then
         m_Rs.Filter = vbNullString
     Else
-        If cboCampo.ListIndex = -1 Then
-            cboCampo.ListIndex = 0
-        End If
-        
-         m_Rs.Filter = m_Rs(cboCampo.ListIndex).Name & " LIKE " & SQLText("%" & txtFiltro.Text & "%")
+        Select Case m_CampoTipo
+            Case fdtLong, fdtDecimal, fdtCurrency
+                m_Rs.Filter = m_CampoNombre & " = " & ToNumber(Filtro)
+                    
+            Case fdtDate
+                If IsDate(Filtro) Then
+                    m_Rs.Filter = m_CampoNombre & " = " & CDate(Filtro)
+                End If
+            
+            Case Else
+                m_Rs.Filter = m_CampoNombre & " LIKE '%" & Filtro & "%'"
+        End Select
     End If
     
-    FillGrid grd, m_Rs
-    
-Finally:
-'    grd.AutoSize
-'    grd.SelectRow 1
-    cmdOk.Enabled = Not EmptyRS(m_Rs)
-    
-    Exit Sub
-ErrHandler:
-    ErrorReport "frmSeleccion", "Mostrar"
-    Resume Finally
-End Sub
-
-Public Function Seleccionar(ByVal TipoSeleccion As ETipoSeleccion) As Boolean
-    Dim Consulta As String
-    Dim Titulos() As Variant
-    Dim CampoDefecto As Long
-    Dim i As Long
-    
-    m_OK = False
-    m_TipoSeleccion = TipoSeleccion
-    
-    Select Case m_TipoSeleccion
-        Case tsClientes
-            Me.Caption = "Seleccionar cliente"
-            Consulta = "SELECT id, nombre FROM clientes ORDER BY id"
-            Titulos = Array("Id", "Nombre")
-            CampoDefecto = 1
-            
-        Case tsProductos
-            Me.Caption = "Seleccionar producto"
-            Consulta = "SELECT id, descripcion, familia, marca FROM v_productos ORDER BY id"
-            Titulos = Array("Id", "Referencia", "Descripción", "Familia", "Marca")
-            CampoDefecto = 2
-    End Select
-        
-    Set m_Rs = GetRs(Consulta)
-
     With grd
         .Redraw = False
-        .Cols = UBound(Titulos) + .FixedCols + 1
-        .Rows = .FixedRows + 1
+        .Rows = 1
     
-        For i = LBound(Titulos) To UBound(Titulos)
-            cboCampo.AddItem Trim$(Titulos(i))
-            grd.TextMatrix(0, i + grd.FixedCols) = Trim$(Titulos(i))
-        Next
+        If EmptyRS(m_Rs) Then
+            cmdAceptar.Enabled = False
+        Else
+            cmdAceptar.Enabled = True
+            
+            .Rows = m_Rs.RecordCount + 1
+            
+            For i = 1 To .Rows - 1
+                For j = 0 To .Cols - 1
+                    .TextMatrix(i, j) = m_Rs.Fields(j) & vbNullString
+                Next
+                
+                m_Rs.MoveNext
+            Next
+        End If
         
-        grd.Redraw = True
+        .Redraw = True
     End With
-    
-    If cboCampo.ListCount > 0 Then
-       cboCampo.ListIndex = CampoDefecto
-    End If
-        
+
+On Error Resume Next
+    AutoSize grd
+    SelectRow grd, 1
+    Screen.MousePointer = vbDefault
+
+    Exit Sub
+Catch:
+    ErrorReport "frmSeleccion", "Mostrar"
+    Screen.MousePointer = vbDefault
+End Sub
+
+Private Sub cboCampo_Click()
+    m_CampoNombre = m_Rs.Fields(cboCampo.ListIndex).Name
+    m_CampoTipo = GetFieldType(m_Rs.Fields(cboCampo.ListIndex))
     Mostrar
-    
-    Me.Show vbModal
-    Seleccionar = m_OK
-End Function
+End Sub
+
+Private Sub cmdCancelar_Click()
+    m_ModalResult = mrCancel
+    Unload Me
+End Sub
+
+Private Sub cmdAceptar_Click()
+    If grd.Rows > 1 And grd.Row > 0 Then
+        m_Seleccion = grd.TextMatrix(grd.Row, 0)
+        m_ModalResult = mrOK
+        Unload Me
+    End If
+End Sub
+
+Private Sub Form_Load()
+    Set m_Anchor = New CAnchor
+    With m_Anchor
+        .AddControl txtFiltro, apLeft + apRight
+        .AddControl grd, apAll
+        .AddControl cmdAceptar, apBottom + apRight
+        .AddControl cmdCancelar, apBottom + apRight
+    End With
+End Sub
+
+Private Sub Form_Unload(Cancel As Integer)
+    CloseRS m_Rs
+    Set m_Anchor = Nothing
+End Sub
 
 Private Sub grd_DblClick()
-    If grd.MouseRow = 0 Then
-'        grd.AutoSize grd.MouseCol
-    Else
-        cmdOK_Click
+    If cmdAceptar.Enabled Then
+        cmdAceptar_Click
     End If
 End Sub
 
 Private Sub grd_KeyPress(KeyAscii As Integer)
     If KeyAscii = vbKeyReturn Then
-        cmdOK_Click
+        If cmdAceptar.Enabled Then
+            cmdAceptar_Click
+        End If
     End If
-End Sub
-
-Private Sub Form_Terminate()
-    CloseRS m_Rs
 End Sub
 
 Private Sub txtFiltro_GotFocus()
@@ -209,19 +269,24 @@ Private Sub txtFiltro_GotFocus()
 End Sub
 
 Private Sub txtFiltro_KeyDown(KeyCode As Integer, Shift As Integer)
-    If KeyCode = vbKeyDown Then
+    If KeyCode = vbKeyReturn Then
+        Mostrar
+    End If
+    
+    If (KeyCode = vbKeyReturn Or KeyCode = vbKeyDown) And grd.Rows > 1 Then
         grd.SetFocus
     End If
 End Sub
 
-Private Sub txtFiltro_KeyPress(KeyAscii As Integer)
-    If KeyAscii = vbKeyReturn Then
-        Mostrar
-        
-        If grd.Rows > 1 Then
-            grd.SetFocus
-        Else
-            txtFiltro.SetFocus
-        End If
-    End If
-End Sub
+'Constructores por defecto
+Public Function IniciarProductos() As Boolean
+    Dim sql As New CString
+    
+    With sql
+        .Append " SELECT id, descripcion"
+        .Append " FROM productos"
+        .Append " ORDER BY id"
+                
+        Iniciar .ToString, "Código, Descripción"
+    End With
+End Function
