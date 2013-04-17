@@ -10,6 +10,12 @@ Public Enum EGridCellProperty
     gcpBackColor
 End Enum
 
+Public Enum EGridColAlign
+    gcaLeft
+    gcaRight
+    gcaCenter
+End Enum
+
 Public Sub FillGrid(ByRef grd As MSFlexGrid, _
                     ByRef rs As ADODB.Recordset, _
                     Optional ByVal PreserveRow As Boolean = False, _
@@ -274,4 +280,22 @@ Public Sub ColProperty(ByRef grd As MSFlexGrid, _
                        ByVal Col As Long)
     CellProperty grd, Property, NewValue, grd.FixedRows, Col, grd.Rows - 1, Col
 End Sub
+
+Public Sub InitGridCol(ByRef grd As MSFlexGrid, _
+                       ByVal Col As Long, _
+                       ByVal Text As String, _
+                       Optional ByVal Width As Long = 1000, _
+                       Optional ByVal Align As EGridColAlign)
+    With grd
+        .TextMatrix(0, Col) = Text
+        .ColWidth(Col) = Width
+        
+        Select Case Align
+            Case gcaCenter: .ColAlignment(Col) = flexAlignCenterCenter
+            Case gcaRight:  .ColAlignment(Col) = flexAlignRightCenter
+            Case gcaLeft:   .ColAlignment(Col) = flexAlignLeftCenter
+        End Select
+    End With
+End Sub
+                       
 

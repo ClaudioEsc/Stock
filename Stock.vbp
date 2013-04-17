@@ -28,6 +28,7 @@ Class=CLista; clases\CLista.cls
 Class=CListaCampo; clases\CListaCampo.cls
 Form=formularios\frmConexion.frm
 Class=CAnchor; clases\CAnchor.cls
+Form=formularios\frmMovimiento.frm
 IconForm="frmPrincipal"
 Startup="Sub Main"
 HelpFile=""

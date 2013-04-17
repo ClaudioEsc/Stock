@@ -19,6 +19,12 @@ Begin VB.MDIForm frmPrincipal
       Begin VB.Menu mnuRubros 
          Caption         =   "Rubros"
       End
+      Begin VB.Menu linStock1 
+         Caption         =   "-"
+      End
+      Begin VB.Menu mnuMovimientos 
+         Caption         =   "Movimientos"
+      End
    End
    Begin VB.Menu mnuVentana 
       Caption         =   "Ve&ntana"
@@ -71,6 +77,12 @@ Private Sub MDIForm_Unload(Cancel As Integer)
     Next
     
     TerminateConnection
+End Sub
+
+Private Sub mnuMovimientos_Click()
+    With New frmMovimiento
+        .Show
+    End With
 End Sub
 
 Private Sub mnuProductos_Click()

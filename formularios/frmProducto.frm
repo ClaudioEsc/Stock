@@ -22,19 +22,11 @@ Begin VB.Form frmProducto
    ScaleWidth      =   6855
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin VB.TextBox txtGanancia 
-      Alignment       =   1  'Right Justify
-      Height          =   315
-      Left            =   3420
-      TabIndex        =   5
-      Top             =   1500
-      Width           =   1035
-   End
    Begin VB.TextBox txtStock 
       Alignment       =   1  'Right Justify
       Height          =   315
       Left            =   1200
-      TabIndex        =   7
+      TabIndex        =   6
       Top             =   2280
       Width           =   1035
    End
@@ -42,7 +34,7 @@ Begin VB.Form frmProducto
       Alignment       =   1  'Right Justify
       Height          =   315
       Left            =   1200
-      TabIndex        =   6
+      TabIndex        =   5
       Top             =   1920
       Width           =   1035
    End
@@ -91,7 +83,7 @@ Begin VB.Form frmProducto
       Caption         =   "&Aceptar"
       Height          =   375
       Left            =   4440
-      TabIndex        =   8
+      TabIndex        =   7
       Top             =   2760
       Width           =   1095
    End
@@ -100,25 +92,16 @@ Begin VB.Form frmProducto
       Caption         =   "&Cancelar"
       Height          =   375
       Left            =   5640
-      TabIndex        =   9
+      TabIndex        =   8
       Top             =   2760
       Width           =   1095
-   End
-   Begin VB.Label Label7 
-      AutoSize        =   -1  'True
-      Caption         =   "% Ganancia:"
-      Height          =   195
-      Left            =   2400
-      TabIndex        =   18
-      Top             =   1560
-      Width           =   930
    End
    Begin VB.Label Label6 
       AutoSize        =   -1  'True
       Caption         =   "Precio:"
       Height          =   195
       Left            =   120
-      TabIndex        =   17
+      TabIndex        =   16
       Top             =   1560
       Width           =   495
    End
@@ -127,7 +110,7 @@ Begin VB.Form frmProducto
       Caption         =   "Costo:"
       Height          =   195
       Left            =   120
-      TabIndex        =   16
+      TabIndex        =   15
       Top             =   1200
       Width           =   480
    End
@@ -136,7 +119,7 @@ Begin VB.Form frmProducto
       Caption         =   "U.M."
       Height          =   195
       Left            =   120
-      TabIndex        =   15
+      TabIndex        =   14
       Top             =   1200
       Width           =   345
    End
@@ -145,7 +128,7 @@ Begin VB.Form frmProducto
       Caption         =   "Stock mínimo:"
       Height          =   195
       Left            =   120
-      TabIndex        =   14
+      TabIndex        =   13
       Top             =   1920
       Width           =   975
    End
@@ -154,7 +137,7 @@ Begin VB.Form frmProducto
       Caption         =   "Rubro:"
       Height          =   195
       Left            =   120
-      TabIndex        =   13
+      TabIndex        =   12
       Top             =   840
       Width           =   495
    End
@@ -164,7 +147,7 @@ Begin VB.Form frmProducto
       ForeColor       =   &H80000008&
       Height          =   195
       Left            =   120
-      TabIndex        =   12
+      TabIndex        =   11
       Top             =   2280
       Width           =   930
    End
@@ -173,7 +156,7 @@ Begin VB.Form frmProducto
       Caption         =   "Código:"
       Height          =   195
       Left            =   120
-      TabIndex        =   11
+      TabIndex        =   10
       Top             =   120
       Width           =   555
    End
@@ -182,7 +165,7 @@ Begin VB.Form frmProducto
       Caption         =   "Descripción:"
       Height          =   195
       Left            =   120
-      TabIndex        =   10
+      TabIndex        =   9
       Top             =   480
       Width           =   870
    End
@@ -322,7 +305,7 @@ End Function
 
 Private Sub cmdAceptar_Click()
     If Guardar Then
-        m_ModalResult = mrOK
+        m_ModalResult = mrOk
         Unload Me
     End If
 End Sub
