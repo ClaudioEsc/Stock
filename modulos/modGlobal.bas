@@ -1,14 +1,18 @@
 Attribute VB_Name = "modGlobal"
 Option Explicit
 
+Public Const MOVIMIENTO_ENTRADA As String = "E"
+Public Const MOVIMIENTO_SALIDA  As String = "S"
+
 Public Enum EListas
     lsProductos
     lsRubros
+    lsMovimientos
 End Enum
 
 Public Enum EModalResult
     mrCancel
-    mrOk
+    mrOK
 End Enum
 
 Public gPathINI As String
@@ -21,10 +25,6 @@ Public Sub Main()
             If .ShowModal = vbOK Then
                 frmPrincipal.Show
             End If
-        End With
-    Else
-        With New frmConexion
-            .Show vbModal
         End With
     End If
 End Sub

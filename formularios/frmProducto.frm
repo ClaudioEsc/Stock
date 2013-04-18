@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form frmProducto 
    BorderStyle     =   3  'Fixed Dialog
-   ClientHeight    =   3255
+   ClientHeight    =   3615
    ClientLeft      =   45
    ClientTop       =   435
    ClientWidth     =   6855
@@ -18,11 +18,26 @@ Begin VB.Form frmProducto
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   3255
+   ScaleHeight     =   3615
    ScaleWidth      =   6855
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.TextBox txtCodigoBarras 
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   1
+      Top             =   480
+      Width           =   5535
+   End
    Begin VB.TextBox txtStock 
+      Alignment       =   1  'Right Justify
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   7
+      Top             =   2640
+      Width           =   1035
+   End
+   Begin VB.TextBox txtStockMinimo 
       Alignment       =   1  'Right Justify
       Height          =   315
       Left            =   1200
@@ -30,7 +45,7 @@ Begin VB.Form frmProducto
       Top             =   2280
       Width           =   1035
    End
-   Begin VB.TextBox txtStockMinimo 
+   Begin VB.TextBox txtPrecio 
       Alignment       =   1  'Right Justify
       Height          =   315
       Left            =   1200
@@ -38,7 +53,7 @@ Begin VB.Form frmProducto
       Top             =   1920
       Width           =   1035
    End
-   Begin VB.TextBox txtPrecio 
+   Begin VB.TextBox txtCosto 
       Alignment       =   1  'Right Justify
       Height          =   315
       Left            =   1200
@@ -46,19 +61,11 @@ Begin VB.Form frmProducto
       Top             =   1560
       Width           =   1035
    End
-   Begin VB.TextBox txtCosto 
-      Alignment       =   1  'Right Justify
-      Height          =   315
-      Left            =   1200
-      TabIndex        =   3
-      Top             =   1200
-      Width           =   1035
-   End
    Begin VB.TextBox txtDescripcion 
       Height          =   315
       Left            =   1200
-      TabIndex        =   1
-      Top             =   480
+      TabIndex        =   2
+      Top             =   840
       Width           =   5535
    End
    Begin VB.TextBox txtId 
@@ -75,16 +82,16 @@ Begin VB.Form frmProducto
       Height          =   315
       Left            =   1200
       Style           =   2  'Dropdown List
-      TabIndex        =   2
-      Top             =   840
+      TabIndex        =   3
+      Top             =   1200
       Width           =   5535
    End
    Begin VB.CommandButton cmdAceptar 
       Caption         =   "&Aceptar"
       Height          =   375
       Left            =   4440
-      TabIndex        =   7
-      Top             =   2760
+      TabIndex        =   8
+      Top             =   3120
       Width           =   1095
    End
    Begin VB.CommandButton cmdCancelar 
@@ -92,17 +99,26 @@ Begin VB.Form frmProducto
       Caption         =   "&Cancelar"
       Height          =   375
       Left            =   5640
-      TabIndex        =   8
-      Top             =   2760
+      TabIndex        =   9
+      Top             =   3120
       Width           =   1095
+   End
+   Begin VB.Label Label5 
+      AutoSize        =   -1  'True
+      Caption         =   "Cód. barras:"
+      Height          =   195
+      Left            =   120
+      TabIndex        =   18
+      Top             =   480
+      Width           =   915
    End
    Begin VB.Label Label6 
       AutoSize        =   -1  'True
       Caption         =   "Precio:"
       Height          =   195
       Left            =   120
-      TabIndex        =   16
-      Top             =   1560
+      TabIndex        =   17
+      Top             =   1920
       Width           =   495
    End
    Begin VB.Label Label1 
@@ -110,8 +126,8 @@ Begin VB.Form frmProducto
       Caption         =   "Costo:"
       Height          =   195
       Left            =   120
-      TabIndex        =   15
-      Top             =   1200
+      TabIndex        =   16
+      Top             =   1560
       Width           =   480
    End
    Begin VB.Label Label4 
@@ -119,8 +135,8 @@ Begin VB.Form frmProducto
       Caption         =   "U.M."
       Height          =   195
       Left            =   120
-      TabIndex        =   14
-      Top             =   1200
+      TabIndex        =   15
+      Top             =   1560
       Width           =   345
    End
    Begin VB.Label Label12 
@@ -128,8 +144,8 @@ Begin VB.Form frmProducto
       Caption         =   "Stock mínimo:"
       Height          =   195
       Left            =   120
-      TabIndex        =   13
-      Top             =   1920
+      TabIndex        =   14
+      Top             =   2280
       Width           =   975
    End
    Begin VB.Label Label11 
@@ -137,8 +153,8 @@ Begin VB.Form frmProducto
       Caption         =   "Rubro:"
       Height          =   195
       Left            =   120
-      TabIndex        =   12
-      Top             =   840
+      TabIndex        =   13
+      Top             =   1200
       Width           =   495
    End
    Begin VB.Label Label10 
@@ -147,8 +163,8 @@ Begin VB.Form frmProducto
       ForeColor       =   &H80000008&
       Height          =   195
       Left            =   120
-      TabIndex        =   11
-      Top             =   2280
+      TabIndex        =   12
+      Top             =   2640
       Width           =   930
    End
    Begin VB.Label Label2 
@@ -156,7 +172,7 @@ Begin VB.Form frmProducto
       Caption         =   "Código:"
       Height          =   195
       Left            =   120
-      TabIndex        =   10
+      TabIndex        =   11
       Top             =   120
       Width           =   555
    End
@@ -165,8 +181,8 @@ Begin VB.Form frmProducto
       Caption         =   "Descripción:"
       Height          =   195
       Left            =   120
-      TabIndex        =   9
-      Top             =   480
+      TabIndex        =   10
+      Top             =   840
       Width           =   870
    End
 End
@@ -265,9 +281,10 @@ On Error GoTo ErrorHandler
     If m_IsNew Then
         With New CString
             .Append "INSERT INTO productos"
-            .Append "(descripcion, idrubro, stock_minimo, stock, precio, costo)"
+            .Append "(codigo_barras, descripcion, idrubro, stock_minimo, stock, precio, costo)"
             .Append "VALUES"
-            .Append "(" & SQLText(txtDescripcion.Text)
+            .Append "(" & SQLText(txtCodigoBarras.Text)
+            .Append "," & SQLText(txtDescripcion.Text)
             .Append "," & SQLNum(GetItemData(cboRubro))
             .Append "," & SQLNum(ToNumber(txtStockMinimo.Text))
             .Append "," & SQLNum(ToNumber(txtStock.Text))
@@ -283,6 +300,7 @@ On Error GoTo ErrorHandler
         With New CString
             .Append "UPDATE productos SET"
             .Append "  descripcion = " & SQLText(txtDescripcion.Text)
+            .Append ", codigo_barras = " & SQLText(txtCodigoBarras.Text)
             .Append ", idrubro = " & SQLNum(GetItemData(cboRubro))
             .Append ", stock_minimo = " & SQLNum(ToNumber(txtStockMinimo.Text))
             .Append ", stock = " & SQLNum(ToNumber(txtStock.Text))
@@ -305,7 +323,7 @@ End Function
 
 Private Sub cmdAceptar_Click()
     If Guardar Then
-        m_ModalResult = mrOk
+        m_ModalResult = mrOK
         Unload Me
     End If
 End Sub

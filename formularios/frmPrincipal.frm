@@ -80,9 +80,7 @@ Private Sub MDIForm_Unload(Cancel As Integer)
 End Sub
 
 Private Sub mnuMovimientos_Click()
-    With New frmMovimiento
-        .Show
-    End With
+    MostrarLista lsMovimientos
 End Sub
 
 Private Sub mnuProductos_Click()

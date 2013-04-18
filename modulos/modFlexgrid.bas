@@ -65,7 +65,9 @@ Catch:
     Resume Finally
 End Sub
 
-Public Function ExportarExcel(ByVal FileName As String, ByRef fg As Object, ByVal Title As String) As Boolean
+Public Function GridExportExcel(ByRef grd As MSFlexGrid, _
+                                ByVal FileName As String, _
+                                ByVal Title As String) As Boolean
     Dim Excel   As Object
     Dim Book    As Object
     Dim Sheet   As Object
@@ -79,11 +81,11 @@ On Error GoTo ErrHandler
     Set Sheet = Book.Worksheets.Add
 
     With Sheet
-        For Row = 0 To fg.Rows - 1
-            For Col = fg.FixedCols To fg.Cols - 1
-                With .Cells(Row + 1, Col + 1 - fg.FixedCols)
+        For Row = 0 To grd.Rows - 1
+            For Col = grd.FixedCols To grd.Cols - 1
+                With .Cells(Row + 1, Col + 1 - grd.FixedCols)
                     .Font.Bold = (Row = 0)
-                    .Value = fg.TextMatrix(Row, Col)
+                    .Value = grd.TextMatrix(Row, Col)
                 End With
             Next
         Next
@@ -98,7 +100,7 @@ On Error GoTo ErrHandler
     Book.Close True, FileName
     Excel.Quit
 
-    ExportarExcel = True
+    GridExportExcel = True
  
 ResumePoint:
     Set Excel = Nothing
@@ -111,9 +113,9 @@ ErrHandler:
     Resume ResumePoint
 End Function
 
-Public Sub AutoSize(ByRef grd As MSFlexGrid, _
-                    Optional ByVal Col1 As Long = 0, _
-                    Optional ByVal Col2 As Long = 0)
+Public Sub GridAutoSize(ByRef grd As MSFlexGrid, _
+                        Optional ByVal Col1 As Long = 0, _
+                        Optional ByVal Col2 As Long = 0)
     Dim Col As Long
     Dim Row As Long
     Dim TopRow As Long
@@ -160,7 +162,7 @@ Public Sub AutoSize(ByRef grd As MSFlexGrid, _
     End With
 End Sub
 
-Public Sub SelectRow(ByRef grd As MSFlexGrid, Optional ByVal Row As Long = 1)
+Public Sub GridSelectRow(ByRef grd As MSFlexGrid, Optional ByVal Row As Long = 1)
 On Error Resume Next
     With grd
         .Redraw = False
@@ -281,7 +283,7 @@ Public Sub ColProperty(ByRef grd As MSFlexGrid, _
     CellProperty grd, Property, NewValue, grd.FixedRows, Col, grd.Rows - 1, Col
 End Sub
 
-Public Sub InitGridCol(ByRef grd As MSFlexGrid, _
+Public Sub GridInitCol(ByRef grd As MSFlexGrid, _
                        ByVal Col As Long, _
                        ByVal Text As String, _
                        Optional ByVal Width As Long = 1000, _
@@ -298,4 +300,62 @@ Public Sub InitGridCol(ByRef grd As MSFlexGrid, _
     End With
 End Sub
                        
+Public Function GridFindRow(ByRef grd As MSFlexGrid, _
+                            ByVal Item As String, _
+                            Optional ByVal Row As Long = -1, _
+                            Optional ByVal Col As Long = -1, _
+                            Optional ByVal FullMatch As Boolean = True) As Long
+    Dim i As Long
+    Dim j As Long
+    Dim RetRow As Long
+    
+    RetRow = -1
+    
+    With grd
+        If Row = -1 Then
+            Row = .FixedRows
+        End If
+        
+        ' Busqueda por RowData
+        If Col = -1 Then
+            For i = Row To .Rows - 1
+                If .RowData(i) = Val(Item) Then
+                    RetRow = i
+                    Exit For
+                End If
+            Next
+        Else
+            ' Busqueda de palabra completa
+            If FullMatch Then
+                For i = Row To .Rows - 1
+                    If .TextMatrix(i, Col) = Item Then
+                        RetRow = i
+                        Exit For
+                    End If
+                Next
+            Else
+            ' Busqueda por porcion de palabra
+                For i = Row To .Rows - 1
+                    If InStr(1, .TextMatrix(i, Col), Item) Then
+                        RetRow = i
+                        Exit For
+                    End If
+                Next
+            End If
+        End If
+    End With
+    
+    GridFindRow = RetRow
+End Function
 
+Public Sub GridRemoveRow(ByRef grd As MSFlexGrid, ByVal Row As Long)
+    With grd
+        If .Rows > .FixedRows Then
+            If .Rows - .FixedRows = 1 Then
+                .Rows = 1
+            Else
+                .RemoveItem Row
+            End If
+        End If
+    End With
+End Sub

@@ -307,6 +307,15 @@ Public Sub IniciarLista()
                 .AgregarCampo "id", "Código", caDerecha, ctNumero
                 .AgregarCampo "descripcion", "Descripción"
             End With
+        
+        Case lsMovimientos
+            With m_ObjLista
+                .Titulo = "Movimientos"
+                .Tabla = "movimientos"
+                .AgregarCampo "id", "Número", caDerecha, ctNumero
+                .AgregarCampo "fecha", "Fecha", caDerecha, ctFecha
+                .AgregarCampo "tipo", "Tipo", caCentro, ctTexto
+            End With
     End Select
 End Sub
 
@@ -368,7 +377,7 @@ Public Sub RestaurarEstado()
     If UBound(Estado) < 1 Then
         cboCampo.ListIndex = 0
         cboOrden.ListIndex = 0 'Ejecuta el procedimiento 'Mostrar'
-        AutoSize grd
+        GridAutoSize grd
     Else
         If Val(Estado(0)) < cboCampo.ListCount Then
             cboCampo.ListIndex = Val(Estado(0))
@@ -387,7 +396,7 @@ Public Sub RestaurarEstado()
                 grd.ColWidth(i - 2) = Val(Estado(i))
             Next
         Else
-            AutoSize grd
+            GridAutoSize grd
         End If
     End If
 End Sub
@@ -468,7 +477,7 @@ On Error GoTo Catch
 
 Finally:
     CloseRS rs
-    SelectRow grd, PrevRow
+    GridSelectRow grd, PrevRow
     Screen.MousePointer = vbDefault
 
     Exit Sub
@@ -529,6 +538,7 @@ On Error GoTo ErrorHandler
         Select Case m_Lista
             Case lsProductos:   Set f = New frmProducto
             Case lsRubros:      Set f = New frmRubro
+            Case lsMovimientos: Set f = New frmMovimiento
         End Select
         
         If Not Accion = abmNuevo Then
@@ -589,7 +599,7 @@ Private Sub cmdMenu_Click(Index As Integer)
                 .Init Me
                 .Filter = "Libro de Microsoft Office Excel|.xls"
                 If .ShowSave() Then
-                    If ExportarExcel(.FileName, grd, Me.Caption) Then
+                    If GridExportExcel(grd, .FileName, Me.Caption) Then
                         MsgBox "Datos exportados en '" & .FileName & "'", vbInformation
                     End If
                 End If
@@ -599,7 +609,7 @@ Private Sub cmdMenu_Click(Index As Integer)
             Unload Me
             
         Case BTN_AUTOSIZE
-            AutoSize grd
+            GridAutoSize grd
     End Select
 End Sub
 
@@ -647,7 +657,7 @@ End Sub
 
 Private Sub grd_DblClick()
     If grd.MouseRow = 0 Then
-        AutoSize grd, grd.MouseCol
+        GridAutoSize grd, grd.MouseCol
     Else
         cmdMenu_Click BTN_EDIT
     End If

@@ -1,4 +1,0 @@
-Stock
-=====
-
-Gestión de stock
