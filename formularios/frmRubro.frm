@@ -25,7 +25,7 @@ Begin VB.Form frmRubro
    Begin VB.TextBox txtDescripcion 
       Height          =   315
       Left            =   1080
-      TabIndex        =   3
+      TabIndex        =   0
       Top             =   120
       Width           =   3915
    End
@@ -34,7 +34,7 @@ Begin VB.Form frmRubro
       Caption         =   "&Cancelar"
       Height          =   375
       Left            =   3900
-      TabIndex        =   1
+      TabIndex        =   2
       Top             =   600
       Width           =   1095
    End
@@ -42,7 +42,7 @@ Begin VB.Form frmRubro
       Caption         =   "&Aceptar"
       Height          =   375
       Left            =   2700
-      TabIndex        =   0
+      TabIndex        =   1
       Top             =   600
       Width           =   1095
    End
@@ -51,7 +51,7 @@ Begin VB.Form frmRubro
       Caption         =   "Descripción:"
       Height          =   195
       Left            =   120
-      TabIndex        =   2
+      TabIndex        =   3
       Top             =   120
       Width           =   870
    End
@@ -62,24 +62,34 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
+Implements IFormABM
 
 Private m_Id As Long
 Private m_ModalResult As EModalResult
 Private m_IsNew As Boolean
 
-Public Property Get Id() As Long
-    Id = m_Id
+Public Property Get IFormABM_Id() As String
+    IFormABM_Id = Format$(m_Id)
 End Property
 
-Public Function ShowModal(Optional ByRef OwnerForm As Form) As EModalResult
+Public Function IFormABM_ShowModal(Optional ByRef OwnerForm As Form) As EModalResult
     Me.Show vbModal, OwnerForm
-    ShowModal = m_ModalResult
+    IFormABM_ShowModal = m_ModalResult
 End Function
 
-Public Function Iniciar(ByVal IsNew As Boolean, _
-                        Optional ByVal Id As String) As Boolean
+Public Sub IFormABM_Iniciar(ByVal IsNew As Boolean, Optional ByVal Id As String)
     m_IsNew = IsNew
     m_Id = Val(Id)
+End Sub
+
+Public Function IFormABM_Eliminar(ByVal Id As String) As Boolean
+On Error GoTo Catch
+    ExecuteDelete "rubros", "id = " & SQLNum(Val(Id))
+    IFormABM_Eliminar = True
+    
+    Exit Function
+Catch:
+    ErrorReport "Eliminar", "frmRubro"
 End Function
 
 Private Function Mostrar() As Boolean
@@ -102,16 +112,6 @@ Finally:
 Catch:
     ErrorReport "Mostrar", "frmRubro"
     Resume Finally
-End Function
-
-Public Function Eliminar() As Boolean
-On Error GoTo Catch
-    ExecuteDelete "rubros", "id = " & SQLNum(m_Id)
-    Eliminar = True
-    
-    Exit Function
-Catch:
-    ErrorReport "Eliminar", "frmRubro"
 End Function
 
 Private Function Validar() As Boolean
@@ -147,7 +147,7 @@ On Error GoTo ErrorHandler
         m_Id = GetLastId()
     Else
         With New CString
-            .Append "UPDATE familias SET"
+            .Append "UPDATE rubros SET"
             .Append " descripcion = " & SQLText(txtDescripcion.Text)
             .Append " WHERE id = " & SQLNum(m_Id)
             
@@ -176,3 +176,18 @@ Private Sub cmdCancelar_Click()
     Unload Me
 End Sub
 
+Private Sub Form_Load()
+    If Not m_IsNew And m_Id > 0 Then
+        Mostrar
+    End If
+    
+    If m_IsNew Then
+        Me.Caption = "Rubro - Nuevo"
+    Else
+        Me.Caption = "Rubro - Modificando"
+    End If
+End Sub
+
+Private Sub txtDescripcion_GotFocus()
+    HLText txtDescripcion
+End Sub

@@ -27,6 +27,7 @@ Public Sub AgregarCampo(ByVal Nombre As String, _
     Set c = New CListaCampo
     
     With c
+        .Indice = Campos.Count
         .Nombre = Nombre
         .Titulo = Titulo
         .Alineacion = Alineacion

@@ -28,6 +28,7 @@ Public Enum ECampoTipo
     ctBool
 End Enum
 
+Public Indice       As Long
 Public Nombre       As String
 Public Titulo       As String
 Public Alineacion   As ECampoAlineacion

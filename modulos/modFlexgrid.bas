@@ -114,16 +114,17 @@ ErrHandler:
 End Function
 
 Public Sub GridAutoSize(ByRef grd As MSFlexGrid, _
-                        Optional ByVal Col1 As Long = 0, _
-                        Optional ByVal Col2 As Long = 0)
-    Dim Col As Long
-    Dim Row As Long
-    Dim TopRow As Long
+                        Optional ByVal Column As Long = -1)
+    Dim Col     As Long
+    Dim Row     As Long
+    Dim ToRow   As Long
+    Dim FromCol As Long
+    Dim ToCol   As Long
     Dim ColWidth() As Single
     Dim CellWidth  As Single
     
     With grd
-        If .Rows > 0 Then
+        If .Rows > 0 And .Cols > 0 Then
             ReDim ColWidth(0 To .Cols - 1)
             
             For Col = 0 To .Cols - 1
@@ -132,30 +133,30 @@ Public Sub GridAutoSize(ByRef grd As MSFlexGrid, _
             
             'Solamente se ajustan 200 filas.
             If .Rows > 200 Then
-                TopRow = 200
+                ToRow = 200
             Else
-                TopRow = .Rows - 1
+                ToRow = .Rows - 1
             End If
             
-            If Col1 = 0 And Col2 = 0 Then
-                Col1 = 0
-                Col2 = .Cols - 1
-            ElseIf Col1 <> 0 And Col2 = 0 Then
-                Col2 = Col1
+            If Column = -1 Then
+                FromCol = 0
+                ToCol = .Cols - 1
+            Else
+                FromCol = Column
+                ToCol = Column
             End If
-    
-            If Col2 = 0 Then Col2 = .Cols - 1
-                        
-            For Row = 1 To TopRow
-                For Col = Col1 To Col2
+            
+            For Row = 1 To ToRow
+                For Col = FromCol To ToCol
                     CellWidth = .Parent.TextWidth(.TextMatrix(Row, Col))
+                    
                     If ColWidth(Col) < CellWidth Then
                         ColWidth(Col) = CellWidth
                     End If
                 Next
             Next
             
-            For Col = Col1 To Col2
+            For Col = FromCol To ToCol
                 .ColWidth(Col) = ColWidth(Col) + 300
             Next
         End If

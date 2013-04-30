@@ -1,6 +1,24 @@
 Attribute VB_Name = "modGlobal"
 Option Explicit
 
+Private Type tagInitCommonControlsEx
+   lngSize As Long
+   lngICC As Long
+End Type
+
+Private Declare Function InitCommonControlsEx Lib "comctl32.dll" _
+   (iccex As tagInitCommonControlsEx) As Boolean
+Private Const ICC_USEREX_CLASSES = &H200
+
+Private Const ECM_FIRST As Long = &H1500
+Private Const EM_SETCUEBANNER As Long = (ECM_FIRST + 1)
+
+Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" ( _
+    ByVal hwnd As Long, _
+    ByVal wMsg As Long, _
+    ByVal wParam As Long, _
+    lParam As Any) As Long
+
 Public Const MOVIMIENTO_ENTRADA As String = "E"
 Public Const MOVIMIENTO_SALIDA  As String = "S"
 
@@ -17,7 +35,22 @@ End Enum
 
 Public gPathINI As String
 
+Public Function InitCommonControlsVB() As Boolean
+   On Error Resume Next
+   Dim iccex As tagInitCommonControlsEx
+   ' Ensure CC available:
+   With iccex
+       .lngSize = LenB(iccex)
+       .lngICC = ICC_USEREX_CLASSES
+   End With
+   InitCommonControlsEx iccex
+   InitCommonControlsVB = (Err.Number = 0)
+   On Error GoTo 0
+End Function
+
 Public Sub Main()
+    InitCommonControlsVB
+    
     gPathINI = App.Path & "\config.ini"
 
     If InitConnection() Then
@@ -44,9 +77,28 @@ Public Function ToDate(ByVal Value As String) As Double
 End Function
 
 Public Function Confirm(ByVal Message As String, _
-                        Optional ByVal Title As String = "Confirmación", _
-                        Optional ByVal DefaultButton As VbMsgBoxStyle = vbDefaultButton1) As Boolean
-    Confirm = (MsgBox(Message, vbQuestion + vbYesNo + DefaultButton, Title) = vbYes)
+                        ByVal Title As String, _
+                        Optional ByVal Warning As Boolean = False, _
+                        Optional ByVal YesIsDefault As Boolean = True) As Boolean
+    Dim BoxStyle As VbMsgBoxStyle
+    
+    BoxStyle = vbYesNo
+    
+    If Warning Then
+        BoxStyle = BoxStyle + vbExclamation
+    Else
+        BoxStyle = BoxStyle + vbInformation
+    End If
+    
+    If Not YesIsDefault Then
+        BoxStyle = BoxStyle + vbDefaultButton2
+    End If
+    
+    If MsgBox(Message, BoxStyle, Title) = vbYes Then
+        Confirm = True
+    Else
+        Confirm = False
+    End If
 End Function
 
 Public Function ExistFile(ByVal FilePath As String) As Boolean
@@ -186,5 +238,12 @@ Public Sub SetItemData(ByRef cbo As ComboBox, _
             .ListIndex = Default
         End If
     End With
+End Sub
+
+Public Sub SetCueBanner(ByRef TextBox As TextBox, ByVal Banner As String)
+    Dim s As String
+    
+    s = StrConv(Banner, vbUnicode)
+    Call SendMessage(TextBox.hwnd, EM_SETCUEBANNER, 0&, ByVal s)
 End Sub
 

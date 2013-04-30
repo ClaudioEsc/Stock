@@ -21,44 +21,26 @@ Begin VB.Form frmLista
    ScaleHeight     =   7320
    ScaleWidth      =   10185
    WindowState     =   2  'Maximized
-   Begin VB.PictureBox picNoData 
-      BackColor       =   &H8000000C&
-      BorderStyle     =   0  'None
-      Height          =   315
-      Left            =   3720
-      ScaleHeight     =   315
-      ScaleWidth      =   2535
-      TabIndex        =   11
-      TabStop         =   0   'False
-      Top             =   2880
-      Visible         =   0   'False
-      Width           =   2535
-      Begin VB.Label Label3 
-         AutoSize        =   -1  'True
-         BackStyle       =   0  'Transparent
-         Caption         =   "<No se encontraron datos>"
-         BeginProperty Font 
-            Name            =   "Tahoma"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   700
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         ForeColor       =   &H8000000F&
-         Height          =   195
-         Left            =   120
-         TabIndex        =   12
-         Top             =   60
-         Width           =   2340
-      End
+   Begin ComctlLib.Toolbar tbr 
+      Align           =   1  'Align Top
+      Height          =   390
+      Left            =   0
+      TabIndex        =   8
+      Top             =   0
+      Width           =   10185
+      _ExtentX        =   17965
+      _ExtentY        =   688
+      ButtonWidth     =   635
+      ButtonHeight    =   582
+      AllowCustomize  =   0   'False
+      Wrappable       =   0   'False
+      _Version        =   327682
    End
    Begin MSFlexGridLib.MSFlexGrid grd 
       Height          =   1635
       Left            =   60
-      TabIndex        =   10
-      Top             =   1320
+      TabIndex        =   3
+      Top             =   1200
       Width           =   2955
       _ExtentX        =   5212
       _ExtentY        =   2884
@@ -70,16 +52,16 @@ Begin VB.Form frmLista
       GridColorFixed  =   -2147483632
       FocusRect       =   0
       HighLight       =   2
-      GridLinesFixed  =   1
       SelectionMode   =   1
       AllowUserResizing=   1
       Appearance      =   0
+      MouseIcon       =   "frmLista.frx":058A
    End
    Begin ComctlLib.StatusBar sbr 
       Align           =   2  'Align Bottom
       Height          =   315
       Left            =   0
-      TabIndex        =   18
+      TabIndex        =   7
       Top             =   7005
       Width           =   10185
       _ExtentX        =   17965
@@ -91,85 +73,10 @@ Begin VB.Form frmLista
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   17463
-            TextSave        =   ""
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
-   End
-   Begin VB.PictureBox picMenu 
-      Align           =   1  'Align Top
-      BorderStyle     =   0  'None
-      Height          =   555
-      Left            =   0
-      ScaleHeight     =   555
-      ScaleWidth      =   10185
-      TabIndex        =   17
-      TabStop         =   0   'False
-      Top             =   0
-      Width           =   10185
-      Begin VB.CommandButton cmdMenu 
-         Caption         =   "A&justar"
-         Height          =   435
-         Index           =   6
-         Left            =   5580
-         TabIndex        =   5
-         Top             =   60
-         Width           =   1035
-      End
-      Begin VB.CommandButton cmdMenu 
-         Caption         =   "&Cerrar"
-         Height          =   435
-         Index           =   5
-         Left            =   6780
-         TabIndex        =   6
-         Top             =   60
-         Width           =   1035
-      End
-      Begin VB.CommandButton cmdMenu 
-         Caption         =   "&Actualizar"
-         Height          =   435
-         Index           =   4
-         Left            =   4500
-         TabIndex        =   4
-         Top             =   60
-         Width           =   1035
-      End
-      Begin VB.CommandButton cmdMenu 
-         Caption         =   "&Exportar"
-         Height          =   435
-         Index           =   3
-         Left            =   3420
-         TabIndex        =   3
-         Top             =   60
-         Width           =   1035
-      End
-      Begin VB.CommandButton cmdMenu 
-         Caption         =   "&Eliminar"
-         Height          =   435
-         Index           =   2
-         Left            =   2220
-         TabIndex        =   2
-         Top             =   60
-         Width           =   1035
-      End
-      Begin VB.CommandButton cmdMenu 
-         Caption         =   "&Modificar"
-         Height          =   435
-         Index           =   1
-         Left            =   1140
-         TabIndex        =   1
-         Top             =   60
-         Width           =   1035
-      End
-      Begin VB.CommandButton cmdMenu 
-         Caption         =   "&Nuevo"
-         Height          =   435
-         Index           =   0
-         Left            =   60
-         TabIndex        =   0
-         Top             =   60
-         Width           =   1035
-      End
    End
    Begin VB.PictureBox picFiltro 
       Align           =   1  'Align Top
@@ -178,14 +85,14 @@ Begin VB.Form frmLista
       Left            =   0
       ScaleHeight     =   675
       ScaleWidth      =   10185
-      TabIndex        =   13
+      TabIndex        =   4
       TabStop         =   0   'False
-      Top             =   555
+      Top             =   390
       Width           =   10185
       Begin VB.TextBox txtFiltro 
          Height          =   315
          Left            =   1860
-         TabIndex        =   8
+         TabIndex        =   1
          Top             =   300
          Width           =   1815
       End
@@ -193,69 +100,93 @@ Begin VB.Form frmLista
          Height          =   315
          Left            =   60
          Style           =   2  'Dropdown List
-         TabIndex        =   7
+         TabIndex        =   0
          Top             =   300
          Width           =   1755
       End
       Begin VB.PictureBox picOrden 
          BorderStyle     =   0  'None
          Height          =   555
-         Left            =   3720
+         Left            =   3780
          ScaleHeight     =   555
-         ScaleWidth      =   2595
-         TabIndex        =   14
+         ScaleWidth      =   2055
+         TabIndex        =   5
          TabStop         =   0   'False
          Top             =   60
-         Width           =   2595
+         Width           =   2055
          Begin VB.ComboBox cboOrden 
             Height          =   315
             Left            =   0
             Style           =   2  'Dropdown List
-            TabIndex        =   9
+            TabIndex        =   2
             Top             =   240
-            Width           =   2595
+            Width           =   2055
          End
          Begin VB.Label Label2 
             AutoSize        =   -1  'True
             BackStyle       =   0  'Transparent
-            Caption         =   "Ordenar"
-            BeginProperty Font 
-               Name            =   "Tahoma"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   700
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
+            Caption         =   "Orden"
             ForeColor       =   &H80000010&
             Height          =   195
             Left            =   0
-            TabIndex        =   15
+            TabIndex        =   9
             Top             =   0
-            Width           =   690
+            Width           =   450
          End
       End
       Begin VB.Label Label1 
          AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
-         Caption         =   "Buscar"
-         BeginProperty Font 
-            Name            =   "Tahoma"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   700
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
+         Caption         =   "Búsqueda"
          ForeColor       =   &H80000010&
          Height          =   195
          Left            =   60
-         TabIndex        =   16
+         TabIndex        =   6
          Top             =   60
-         Width           =   570
+         Width           =   705
       End
+   End
+   Begin ComctlLib.ImageList iml 
+      Left            =   3060
+      Top             =   1200
+      _ExtentX        =   1005
+      _ExtentY        =   1005
+      BackColor       =   -2147483643
+      ImageWidth      =   16
+      ImageHeight     =   16
+      MaskColor       =   16711935
+      _Version        =   327682
+      BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
+         NumListImages   =   7
+         BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "frmLista.frx":06EC
+            Key             =   "actualizar"
+         EndProperty
+         BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "frmLista.frx":0A3E
+            Key             =   "nuevo"
+         EndProperty
+         BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "frmLista.frx":0D90
+            Key             =   "eliminar"
+         EndProperty
+         BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "frmLista.frx":10E2
+            Key             =   "modificar"
+         EndProperty
+         BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "frmLista.frx":1434
+            Key             =   "exportar"
+         EndProperty
+         BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "frmLista.frx":1786
+            Key             =   "cerrar"
+         EndProperty
+         BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "frmLista.frx":1AD8
+            Key             =   "ajustar"
+         EndProperty
+      EndProperty
    End
 End
 Attribute VB_Name = "frmLista"
@@ -264,20 +195,6 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-
-Private Enum EAccionABM
-    abmNuevo
-    abmModificar
-    abmEliminar
-End Enum
-
-Private Const BTN_NEW       As Long = 0
-Private Const BTN_EDIT      As Long = 1
-Private Const BTN_DELETE    As Long = 2
-Private Const BTN_EXPORT    As Long = 3
-Private Const BTN_REFRESH   As Long = 4
-Private Const BTN_CLOSE     As Long = 5
-Private Const BTN_AUTOSIZE  As Long = 6
 
 Private m_Lista     As EListas
 Private m_ObjLista  As CLista
@@ -294,7 +211,8 @@ Public Sub IniciarLista()
             With m_ObjLista
                 .Titulo = "Productos"
                 .Tabla = "productos"
-                .AgregarCampo "id", "Código", caDerecha, ctNumero
+                .AgregarCampo "id", "Interno", caDerecha, ctNumero
+                .AgregarCampo "codigo", "Código"
                 .AgregarCampo "descripcion", "Descripción"
                 .AgregarCampo "stock", "Stock", caDerecha, ctNumero, False
                 .AgregarCampo "stock_minimo", "Stock mín.", caDerecha, ctNumero, False
@@ -304,7 +222,7 @@ Public Sub IniciarLista()
             With m_ObjLista
                 .Titulo = "Rubros"
                 .Tabla = "rubros"
-                .AgregarCampo "id", "Código", caDerecha, ctNumero
+                .AgregarCampo "id", "Interno", caDerecha, ctNumero
                 .AgregarCampo "descripcion", "Descripción"
             End With
         
@@ -323,14 +241,30 @@ Public Sub IniciarControles()
     Dim Campo As CListaCampo
     Dim i As Long
     
-    i = 0
+    With tbr
+        Set .ImageList = iml
+        With .Buttons
+            .Add , "nuevo", "Nuevo", , "nuevo"
+            .Add , "modificar", "Modificar", , "modificar"
+            .Add , "eliminar", "Eliminar", , "eliminar"
+            .Add , , , tbrSeparator
+            
+            .Add , "actualizar", "Actualizar", , "actualizar"
+            .Add , "ajustar", "Ajustar", , "ajustar"
+            .Add , "exportar", "Exportar", , "exportar"
+            .Add , , , tbrSeparator
+            
+            .Add , "cerrar", "Cerrar", , "cerrar"
+        End With
+    End With
     
     With grd
-        .Redraw = False
         .Clear
         .Cols = m_ObjLista.Campos.Count
         .Rows = 1
     End With
+    
+    i = 0
     
     For Each Campo In m_ObjLista.Campos
         If Campo.PermiteBuscar Then
@@ -350,7 +284,7 @@ Public Sub IniciarControles()
         
         With grd
             .TextMatrix(0, i) = Campo.Titulo
-        
+
             Select Case Campo.Alineacion
                 Case caDerecha
                     .ColAlignment(i) = flexAlignRightCenter
@@ -362,7 +296,7 @@ Public Sub IniciarControles()
                     .ColAlignment(i) = flexAlignLeftCenter
             End Select
         End With
-        
+                
         i = i + 1
     Next
 End Sub
@@ -442,7 +376,7 @@ On Error GoTo Catch
                 Select Case Tabla
                     Case "productos"
                         If rs.Collect("stock") < rs.Collect("stock_minimo") Then
-                            RowProperty grd, gcpBackColor, &HC0C0FF, Row
+                            RowProperty grd, gcpForeColor, &HC0&, Row
                         End If
                 End Select
                 
@@ -461,8 +395,8 @@ On Error GoTo Catch
             End If
         End With
         
-        cmdMenu(BTN_EDIT).Enabled = False
-        cmdMenu(BTN_DELETE).Enabled = False
+        tbr.Buttons("modificar").Enabled = False
+        tbr.Buttons("eliminar").Enabled = False
         sbr.Panels(1).Text = "No se encontraron registros"
     Else
         With txtFiltro
@@ -470,8 +404,8 @@ On Error GoTo Catch
             .ForeColor = vbButtonText
         End With
         
-        cmdMenu(BTN_EDIT).Enabled = True
-        cmdMenu(BTN_DELETE).Enabled = True
+        tbr.Buttons("modificar").Enabled = True
+        tbr.Buttons("eliminar").Enabled = True
         sbr.Panels(1).Text = Format$(rs.RecordCount) & " registros (" & Format$(Timer() - StartTime, "#0.00") & " segundos)"
     End If
 
@@ -526,91 +460,58 @@ Private Function GetConsulta() As String
     End With
 End Function
 
-Private Sub IniciarABM(ByVal Accion As EAccionABM)
-    Dim f As Form
-    Dim Id As String
-    Dim Col As Long
+Private Function GetABM() As IFormABM
+    Dim f As IFormABM
     
-On Error GoTo ErrorHandler
-    If Accion <> abmNuevo And grd.Row = 0 Then
-        MsgBox "No hay registros para realizar la acción.", vbExclamation
-    Else
-        Select Case m_Lista
-            Case lsProductos:   Set f = New frmProducto
-            Case lsRubros:      Set f = New frmRubro
-            Case lsMovimientos: Set f = New frmMovimiento
-        End Select
-        
-        If Not Accion = abmNuevo Then
-            Id = grd.TextMatrix(grd.Row, grd.FixedCols)
-        End If
-        
-        Select Case Accion
-            Case abmNuevo
-                f.Iniciar True
-                
-                If f.ShowModal() = mrOK Then
-                    Mostrar
-                End If
-                
-            Case abmModificar
-                f.Iniciar False, Id
-                
-                If f.ShowModal() = mrOK Then
-                    Mostrar
-                End If
-                
-            Case abmEliminar
-                If f.Eliminar(Id) Then
-                    Mostrar
-                End If
-        End Select
-    End If
+    Select Case m_Lista
+        Case lsProductos:   Set f = New frmProducto
+        Case lsRubros:      Set f = New frmRubro
+        Case lsMovimientos: Set f = New frmMovimiento
+    End Select
+    
+    Set GetABM = f
+End Function
 
-Finally:
-    Set f = Nothing
-    
-    Exit Sub
-ErrorHandler:
-    ErrorReport "frmLista", "IniciarABM"
-    Resume Finally
+Private Function GetId() As String
+    With grd
+        If .Rows > 1 And .Row > 0 Then
+            GetId = grd.TextMatrix(.Row, .FixedCols)
+        End If
+    End With
+End Function
+
+Private Sub NuevoRegistro()
+    With GetABM()
+        .Iniciar True
+                
+        If .ShowModal() = mrOK Then
+            Mostrar
+        End If
+    End With
 End Sub
 
-Private Sub cmdMenu_Click(Index As Integer)
-    If Not cmdMenu(Index).Enabled Then
-        Exit Sub
+Private Sub ModificarRegistro()
+    If tbr.Buttons("modificar").Enabled Then
+        With GetABM()
+            .Iniciar False, GetId()
+            
+            If .ShowModal() = mrOK Then
+                Mostrar
+            End If
+        End With
     End If
+End Sub
 
-    Select Case Index
-        Case BTN_NEW
-            IniciarABM abmNuevo
-
-        Case BTN_EDIT
-            IniciarABM abmModificar
-
-        Case BTN_DELETE
-            IniciarABM abmEliminar
-
-        Case BTN_REFRESH
-            Mostrar
-
-        Case BTN_EXPORT
-            With New CCommonDialog
-                .Init Me
-                .Filter = "Libro de Microsoft Office Excel|.xls"
-                If .ShowSave() Then
-                    If GridExportExcel(grd, .FileName, Me.Caption) Then
-                        MsgBox "Datos exportados en '" & .FileName & "'", vbInformation
-                    End If
+Private Sub EliminarRegistro()
+    If tbr.Buttons("eliminar").Enabled Then
+        If Confirm("¿Desea eliminar el registro seleccionado?", "Eliminar registro", True, False) Then
+            With GetABM()
+                If .Eliminar(GetId()) Then
+                    Mostrar
                 End If
             End With
-
-        Case BTN_CLOSE
-            Unload Me
-            
-        Case BTN_AUTOSIZE
-            GridAutoSize grd
-    End Select
+        End If
+    End If
 End Sub
 
 Private Sub Form_Activate()
@@ -622,6 +523,8 @@ Private Sub Form_Load()
     IniciarLista
     IniciarControles
     RestaurarEstado
+    
+    Me.Caption = m_ObjLista.Titulo
 End Sub
 
 Private Sub Form_Resize()
@@ -630,14 +533,13 @@ Private Sub Form_Resize()
     End If
                      
 On Error Resume Next
-    grd.Move 60, _
-            picFiltro.ScaleHeight + picMenu.ScaleHeight, _
-            Me.ScaleWidth - 120, _
-            Me.ScaleHeight - picMenu.ScaleHeight - picFiltro.ScaleHeight - sbr.Height - 60
-            
-    picNoData.Move (Me.Width - picNoData.Width) / 2, _
-                   (Me.Height - picNoData.Height) / 2
+    tbr.Refresh
     
+    grd.Move 60, _
+            picFiltro.ScaleHeight + tbr.Height, _
+            Me.ScaleWidth - 120, _
+            Me.ScaleHeight - tbr.Height - picFiltro.ScaleHeight - sbr.Height - 60
+                
     picOrden.Left = Me.ScaleWidth - picOrden.Width - 60
     txtFiltro.Width = picOrden.Left - txtFiltro.Left - 60
 End Sub
@@ -659,12 +561,53 @@ Private Sub grd_DblClick()
     If grd.MouseRow = 0 Then
         GridAutoSize grd, grd.MouseCol
     Else
-        cmdMenu_Click BTN_EDIT
+        ModificarRegistro
     End If
 End Sub
 
 Private Sub cboOrden_Click()
     Mostrar
+End Sub
+
+Private Sub grd_KeyDown(KeyCode As Integer, Shift As Integer)
+    Select Case KeyCode
+        Case vbKeyReturn:   ModificarRegistro
+        Case vbKeyDelete:   EliminarRegistro
+        Case vbKeyAdd:      NuevoRegistro
+    End Select
+End Sub
+
+Private Sub tbr_ButtonClick(ByVal Button As ComctlLib.Button)
+    Select Case Button.Key
+        Case "nuevo"
+            NuevoRegistro
+
+        Case "modificar"
+            ModificarRegistro
+
+        Case "eliminar"
+            EliminarRegistro
+
+        Case "actualizar"
+            Mostrar
+
+        Case "exportar"
+            With New CCommonDialog
+                .Init Me
+                .Filter = "Libro de Microsoft Office Excel|.xls"
+                If .ShowSave() Then
+                    If GridExportExcel(grd, .FileName, Me.Caption) Then
+                        MsgBox "Datos exportados en '" & .FileName & "'", vbInformation
+                    End If
+                End If
+            End With
+
+        Case "cerrar"
+            Unload Me
+            
+        Case "ajustar"
+            GridAutoSize grd
+    End Select
 End Sub
 
 Private Sub txtFiltro_KeyPress(KeyAscii As Integer)

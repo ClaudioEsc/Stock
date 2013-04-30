@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "MSFLXGRD.OCX"
+Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "msflxgrd.ocx"
 Begin VB.Form frmSeleccion 
    ClientHeight    =   4095
    ClientLeft      =   60
@@ -67,7 +67,6 @@ Begin VB.Form frmSeleccion
       GridColorFixed  =   -2147483632
       FocusRect       =   0
       HighLight       =   2
-      GridLinesFixed  =   1
       SelectionMode   =   1
       AllowUserResizing=   1
       Appearance      =   0

@@ -18,7 +18,7 @@ Public Function InitConnection() As Boolean
     Dim cnString As String
     Dim PathDB  As String
 
-    cnString = "Driver=SQLite3 ODBC Driver;Database=" & ReadINI("db", "path", App.Path & "\db.s3db")
+    cnString = "Driver=SQLite3 ODBC Driver;Database=" & ReadINI("db", "path", App.Path & "\base.s3db")
     
 On Error GoTo Catch
     Set m_Cn = New ADODB.Connection
@@ -186,6 +186,13 @@ Public Function ExecuteScalar(ByVal Query As String, _
     Set rs = Nothing
     
     ExecuteScalar = RetVal
+End Function
+
+Public Function GetData(ByVal Table As String, _
+                        ByVal Field As String, _
+                        ByVal Where As String, _
+                        Optional ByVal ValueIfNull) As Variant
+    GetData = ExecuteScalar("SELECT " & Field & " FROM " & Table & " WHERE " & Where, ValueIfNull)
 End Function
 
 Public Function GetNext(ByVal Table As String, _

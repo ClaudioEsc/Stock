@@ -3,17 +3,18 @@ CREATE TABLE rubros (
   descripcion VARCHAR(50) NOT NULL
 );
 
-INSERT INTO rubros (id, descripcion) VALUES (1, 'Sin rubro');
+INSERT INTO rubros (id, descripcion) VALUES (1, 'General');
 
 CREATE TABLE productos (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  codigo_barras VARCHAR(50) NULL,
-  descripcion  VARCHAR(50) NOT NULL,
+  codigo VARCHAR(50) NOT NULL,
+  descripcion VARCHAR(50) NOT NULL,
   idrubro INTEGER NOT NULL DEFAULT 0,
   stock_minimo FLOAT NULL NOT NULL DEFAULT 0,
   stock FLOAT NULL NOT NULL DEFAULT 0,
   costo FLOAT NOT NULL DEFAULT 0,
-  precio FLOAT NOT NULL DEFAULT 0
+  precio FLOAT NOT NULL DEFAULT 0,
+  UNIQUE(codigo)
 );
 
 CREATE TABLE usuarios (
@@ -44,6 +45,6 @@ CREATE TABLE movimientos_det (
 );
 
 CREATE VIEW vw_movimientos_det AS 
-SELECT d.idmovimiento as idmovimiento, d.id as iddetalle, d.idproducto as idproducto, p.descripcion as descripcion, d.precio as precio, d.cantidad as cantidad, d.precio * d.cantidad as importe 
+SELECT d.idmovimiento as idmovimiento, d.id as iddetalle, d.idproducto as idproducto, p.codigo as codigo, p.descripcion as descripcion, d.precio as precio, d.cantidad as cantidad, d.precio * d.cantidad as importe 
 FROM movimientos_det d 
 INNER JOIN productos p ON d.idproducto = p.id;

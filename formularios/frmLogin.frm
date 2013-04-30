@@ -24,8 +24,19 @@ Begin VB.Form frmLogin
    ScaleWidth      =   3810
    StartUpPosition =   2  'CenterScreen
    Begin VB.TextBox txtPassword 
+      BeginProperty Font 
+         Name            =   "Wingdings"
+         Size            =   8.25
+         Charset         =   2
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       Height          =   315
+      IMEMode         =   3  'DISABLE
       Left            =   1080
+      PasswordChar    =   "l"
       TabIndex        =   1
       Top             =   480
       Width           =   2595
