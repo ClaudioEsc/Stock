@@ -14,7 +14,7 @@ Private Const ECM_FIRST As Long = &H1500
 Private Const EM_SETCUEBANNER As Long = (ECM_FIRST + 1)
 
 Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" ( _
-    ByVal hwnd As Long, _
+    ByVal hWnd As Long, _
     ByVal wMsg As Long, _
     ByVal wParam As Long, _
     lParam As Any) As Long
@@ -34,6 +34,7 @@ Public Enum EModalResult
 End Enum
 
 Public gPathINI As String
+Public gAppName As String
 
 Public Function InitCommonControlsVB() As Boolean
    On Error Resume Next
@@ -51,8 +52,9 @@ End Function
 Public Sub Main()
     InitCommonControlsVB
     
+    gAppName = App.Title & " v" & App.Major & "." & App.Minor & "." & Format$(App.Revision, "00")
     gPathINI = App.Path & "\config.ini"
-
+    
     If InitConnection() Then
         With New frmLogin
             If .ShowModal = vbOK Then
@@ -244,6 +246,6 @@ Public Sub SetCueBanner(ByRef TextBox As TextBox, ByVal Banner As String)
     Dim s As String
     
     s = StrConv(Banner, vbUnicode)
-    Call SendMessage(TextBox.hwnd, EM_SETCUEBANNER, 0&, ByVal s)
+    Call SendMessage(TextBox.hWnd, EM_SETCUEBANNER, 0&, ByVal s)
 End Sub
 

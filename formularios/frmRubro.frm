@@ -99,7 +99,7 @@ On Error GoTo Catch
     Set rs = GetTable("rubros", "id = " & SQLNum(m_Id))
     
     If EmptyRS(rs) Then
-        MsgBox "No se encontró el rubro.", vbExclamation
+        MsgBox "No se encontró el rubro.", vbExclamation, gAppName
     Else
         txtDescripcion.Text = Nz(rs.Collect("descripcion"))
         Mostrar = True
@@ -116,7 +116,7 @@ End Function
 
 Private Function Validar() As Boolean
     If Len(txtDescripcion.Text) = 0 Then
-        MsgBox "Debe ingresar un descripcion.", vbExclamation
+        MsgBox "Debe ingresar un descripcion.", vbExclamation, gAppName
         txtDescripcion.SetFocus
         Exit Function
     End If

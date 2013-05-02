@@ -33,7 +33,7 @@ Begin VB.Form frmMovimiento
       EndProperty
       Height          =   435
       Left            =   120
-      TabIndex        =   19
+      TabIndex        =   17
       Top             =   120
       Value           =   -1  'True
       Width           =   1275
@@ -51,7 +51,7 @@ Begin VB.Form frmMovimiento
       EndProperty
       Height          =   435
       Left            =   1560
-      TabIndex        =   18
+      TabIndex        =   16
       Top             =   120
       Width           =   1275
    End
@@ -61,7 +61,7 @@ Begin VB.Form frmMovimiento
       Left            =   7740
       ScaleHeight     =   675
       ScaleWidth      =   1695
-      TabIndex        =   12
+      TabIndex        =   11
       TabStop         =   0   'False
       Top             =   120
       Width           =   1695
@@ -79,7 +79,7 @@ Begin VB.Form frmMovimiento
          Height          =   315
          Left            =   720
          Locked          =   -1  'True
-         TabIndex        =   13
+         TabIndex        =   12
          TabStop         =   0   'False
          Top             =   0
          Width           =   975
@@ -89,7 +89,7 @@ Begin VB.Form frmMovimiento
          Caption         =   "Fecha:"
          Height          =   195
          Left            =   0
-         TabIndex        =   15
+         TabIndex        =   14
          Top             =   360
          Width           =   495
       End
@@ -98,7 +98,7 @@ Begin VB.Form frmMovimiento
          Caption         =   "Número:"
          Height          =   195
          Left            =   0
-         TabIndex        =   14
+         TabIndex        =   13
          Top             =   0
          Width           =   615
       End
@@ -181,43 +181,6 @@ Begin VB.Form frmMovimiento
       SelectionMode   =   1
       Appearance      =   0
    End
-   Begin VB.Label Label1 
-      AutoSize        =   -1  'True
-      Caption         =   "Código"
-      Height          =   195
-      Left            =   120
-      TabIndex        =   17
-      Top             =   900
-      Width           =   495
-   End
-   Begin VB.Label lblTituloTotal 
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "Total"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   12
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Height          =   285
-      Left            =   240
-      TabIndex        =   16
-      Top             =   5940
-      Width           =   645
-   End
-   Begin VB.Label Label3 
-      AutoSize        =   -1  'True
-      Caption         =   "Descripción"
-      Height          =   195
-      Left            =   2340
-      TabIndex        =   11
-      Top             =   900
-      Width           =   810
-   End
    Begin VB.Label lblTotal 
       Alignment       =   1  'Right Justify
       AutoSize        =   -1  'True
@@ -225,21 +188,40 @@ Begin VB.Form frmMovimiento
       Caption         =   "0"
       BeginProperty Font 
          Name            =   "Tahoma"
-         Size            =   12
+         Size            =   15.75
          Charset         =   0
          Weight          =   700
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   285
-      Left            =   9120
+      ForeColor       =   &H00FFFFFF&
+      Height          =   375
+      Left            =   9135
+      TabIndex        =   18
+      Top             =   5880
+      Width           =   195
+   End
+   Begin VB.Label Label1 
+      AutoSize        =   -1  'True
+      Caption         =   "Código"
+      Height          =   195
+      Left            =   120
+      TabIndex        =   15
+      Top             =   900
+      Width           =   495
+   End
+   Begin VB.Label Label3 
+      AutoSize        =   -1  'True
+      Caption         =   "Descripción"
+      Height          =   195
+      Left            =   2340
       TabIndex        =   10
-      Top             =   5940
-      Width           =   150
+      Top             =   900
+      Width           =   810
    End
    Begin VB.Shape shpTotal 
-      BackColor       =   &H00C0FFC0&
+      BackColor       =   &H00327846&
       BackStyle       =   1  'Opaque
       BorderColor     =   &H80000010&
       Height          =   495
@@ -313,7 +295,7 @@ On Error GoTo ErrorHandler
     Set rsDetalle = GetTable("vw_movimientos_det", "idmovimiento = " & SQLNum(m_Id))
     
     If EmptyRS(rs) Then
-        MsgBox "No se encontró el movimiento.", vbExclamation
+        MsgBox "No se encontró el movimiento.", vbExclamation, gAppName
     Else
         With rs
             If .Collect("tipo") = MOVIMIENTO_ENTRADA Then
@@ -351,7 +333,7 @@ End Sub
 
 Private Function Validar() As Boolean
     If grd.Rows = 1 Then
-        MsgBox "Debe ingresar al menos un producto.", vbExclamation
+        MsgBox "Debe ingresar al menos un producto.", vbExclamation, gAppName
         txtCodigo.SetFocus
         Exit Function
     End If
@@ -458,7 +440,7 @@ Private Sub cmdBuscarProducto_Click()
         .IniciarProductos
         
         If .ModalResult = mrOK Then
-            If CargarProducto(Val(.ItemSeleccionado)) Then
+            If CargarProducto(.ItemSeleccionado) Then
                 txtCantidad.SetFocus
             End If
         End If
@@ -470,8 +452,7 @@ Private Sub Form_Load()
     With Anchor
         .AddControl grd, apAll
         .AddControl shpTotal, apBottom + apLeft + apRight
-        .AddControl lblTotal, apBottom + apRight
-        .AddControl lblTituloTotal, apBottom
+        .AddControl lblTotal, apRight
         .AddControl cmdAceptar, apBottom + apRight
         .AddControl cmdCancelar, apBottom + apRight
         .AddControl picNumero, apRight
@@ -482,14 +463,15 @@ Private Sub Form_Load()
         .Cols = COL_COUNT
         .ColWidth(0) = 0
 
-        GridInitCol grd, COL_CODIGO, "Código", 1500, gcaRight
-        GridInitCol grd, COL_DESCRIPCION, "Descripción", 2500
+        GridInitCol grd, COL_CODIGO, "Código", 2200, gcaRight
+        GridInitCol grd, COL_DESCRIPCION, "Descripción", 3700
         GridInitCol grd, COL_CANTIDAD, "Cantidad", 1000, gcaRight
         GridInitCol grd, COL_PRECIO, "Precio", 1000, gcaRight
         GridInitCol grd, COL_IMPORTE, "Importe", 1000, gcaRight
     End With
     
     txtFecha.Text = FormatDateTime(Date)
+    lblTotal.Caption = FormatCurrency(0)
     LimpiarDetalle
     
     If Not m_IsNew And m_Id > 0 Then
@@ -511,12 +493,13 @@ On Error GoTo Catch
     Set rs = GetTable("productos", "codigo = " & SQLText(Codigo), "id, descripcion, precio")
     
     If EmptyRS(rs) Then
-        MsgBox "No se encontró el producto.", vbExclamation
+        MsgBox "No se encontró el producto.", vbExclamation, gAppName
         LimpiarDetalle
     Else
         With rs
             m_IdProducto = .Collect("id")
             m_Precio = .Collect("precio")
+            txtCodigo.Text = Codigo
             txtDescripcion.Text = .Collect("descripcion")
         End With
         
@@ -552,13 +535,13 @@ End Sub
 
 Private Sub optEntrada_Click()
 On Error Resume Next
-    shpTotal.BackColor = &HC0FFC0
+    shpTotal.BackColor = &H327846
     txtCodigo.SetFocus
 End Sub
 
 Private Sub optSalida_Click()
 On Error Resume Next
-    shpTotal.BackColor = &HC0C0FF
+    shpTotal.BackColor = &H3A3AA0
     txtCodigo.SetFocus
 End Sub
 
@@ -641,7 +624,7 @@ Private Function ValidarDetalle() As Boolean
     Dim Cantidad    As Double
     
     If Len(txtCodigo.Text) = 0 Then
-        MsgBox "Seleccione un producto.", vbExclamation
+        MsgBox "Seleccione un producto.", vbExclamation, gAppName
         txtCodigo.SetFocus
         Exit Function
     End If
@@ -649,7 +632,7 @@ Private Function ValidarDetalle() As Boolean
     Cantidad = ToNumber(txtCantidad.Text)
 
     If Cantidad <= 0 Then
-        MsgBox "La cantidad debe ser mayor a 0 (cero).", vbExclamation
+        MsgBox "La cantidad debe ser mayor a 0 (cero).", vbExclamation, gAppName
         txtCantidad.SetFocus
         Exit Function
     End If
@@ -698,4 +681,17 @@ Private Sub HabilitarEdicion(ByVal Valor As Boolean)
     txtCantidad.Enabled = Valor
     cmdAgregar.Enabled = Valor
     cmdAceptar.Visible = Valor
+End Sub
+
+Private Sub txtFecha_GotFocus()
+    HLText txtFecha
+End Sub
+
+Private Sub txtFecha_Validate(Cancel As Boolean)
+    If IsDate(txtFecha.Text) Then
+        txtFecha.Text = FormatDateTime(CDate(txtFecha.Text))
+    Else
+        MsgBox "La fecha no es válida.", vbExclamation, gAppName
+        Cancel = True
+    End If
 End Sub

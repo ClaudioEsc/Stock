@@ -73,7 +73,6 @@ Begin VB.Form frmLista
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   17463
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -597,7 +596,7 @@ Private Sub tbr_ButtonClick(ByVal Button As ComctlLib.Button)
                 .Filter = "Libro de Microsoft Office Excel|.xls"
                 If .ShowSave() Then
                     If GridExportExcel(grd, .FileName, Me.Caption) Then
-                        MsgBox "Datos exportados en '" & .FileName & "'", vbInformation
+                        MsgBox "Datos exportados en '" & .FileName & "'", vbInformation, gAppName
                     End If
                 End If
             End With

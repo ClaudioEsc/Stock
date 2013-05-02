@@ -62,6 +62,10 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
+Private Sub MDIForm_Load()
+    Me.Caption = gAppName
+End Sub
+
 Private Sub mnuAcercaDe_Click()
     With New frmAbout
         .Show vbModal, Me

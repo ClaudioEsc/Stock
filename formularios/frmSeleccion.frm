@@ -115,7 +115,7 @@ On Error GoTo Catch
     Set m_Rs = GetRs(sql)
         
     If EmptyRS(m_Rs) Then
-        MsgBox "No hay datos para mostrar.", vbExclamation
+        MsgBox "No hay datos para mostrar.", vbExclamation, gAppName
     Else
         With grd
             .Clear
@@ -282,9 +282,9 @@ Public Function IniciarProductos() As Boolean
     Dim sql As New CString
     
     With sql
-        .Append " SELECT id, descripcion"
+        .Append " SELECT codigo, descripcion"
         .Append " FROM productos"
-        .Append " ORDER BY id"
+        .Append " ORDER BY codigo"
                 
         Iniciar .ToString, "Código, Descripción"
     End With

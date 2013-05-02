@@ -201,7 +201,7 @@ On Error GoTo ErrorHandler
     Set rs = GetTable("productos", "id = " & SQLNum(m_Id))
         
     If EmptyRS(rs) Then
-        MsgBox "No se encontró el producto.", vbExclamation
+        MsgBox "No se encontró el producto.", vbExclamation, gAppName
     Else
         With rs
 '            txtId.Text = .Collect("id")
@@ -226,7 +226,7 @@ End Sub
 
 Private Function Validar() As Boolean
     If Len(txtCodigo.Text) = 0 Then
-        MsgBox "El código es requerido.", vbExclamation
+        MsgBox "El código es requerido.", vbExclamation, gAppName
         txtCodigo.SetFocus
         Exit Function
     Else
@@ -238,13 +238,13 @@ Private Function Validar() As Boolean
     End If
     
     If Len(txtDescripcion.Text) = 0 Then
-        MsgBox "La descripción es requerida.", vbExclamation
+        MsgBox "La descripción es requerida.", vbExclamation, gAppName
         txtDescripcion.SetFocus
         Exit Function
     End If
     
     If cboRubro.ListIndex = -1 Then
-        MsgBox "El rubro es requerido.", vbExclamation
+        MsgBox "El rubro es requerido.", vbExclamation, gAppName
         cboRubro.SetFocus
         Exit Function
     End If

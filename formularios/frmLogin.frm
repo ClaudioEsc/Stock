@@ -92,9 +92,9 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private m_ModalResult As VbMsgBoxResult
+Private m_ModalResult As EModalResult
 
-Public Function ShowModal() As VbMsgBoxResult
+Public Function ShowModal() As EModalResult
     txtUsuario.Text = ReadINI("DB", "User")
     Me.Show vbModal
     ShowModal = m_ModalResult
@@ -102,15 +102,15 @@ End Function
 
 Private Sub cmdAceptar_Click()
     If Not Login(txtUsuario.Text, txtPassword.Text) Then
-        MsgBox "Usuario y/o contraseña incorrectos.", vbCritical
+        MsgBox "Usuario y/o contraseña incorrectos.", vbExclamation, gAppName
     Else
-        m_ModalResult = vbOK
+        m_ModalResult = mrOK
         Unload Me
     End If
 End Sub
 
 Private Sub cmdCancelar_Click()
-    m_ModalResult = vbCancel
+    m_ModalResult = mrCancel
     Unload Me
 End Sub
 
@@ -123,4 +123,12 @@ End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
     WriteINI "DB", "User", txtUsuario.Text
+End Sub
+
+Private Sub txtPassword_GotFocus()
+    HLText txtPassword
+End Sub
+
+Private Sub txtUsuario_GotFocus()
+    HLText txtUsuario
 End Sub
